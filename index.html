@@ -432,10 +432,11 @@ function showOpeningProgress(value,phase){
 const status = $('status');
 try { showOpeningProgress(8,'啟動海面');start(); } catch (error) { document.body.classList.remove('intro-active');document.body.classList.add('sea-revealed');$('intro-white').setAttribute('aria-hidden','true');status.textContent = '無法啟動 3D 海面。請確認瀏覽器支援 WebGL 2。'; console.error(error); }
 function start(){
+const mobileDevice=matchMedia('(pointer:coarse)').matches||innerWidth<=600;
 const scene = new T.Scene();
-const renderer = new T.WebGLRenderer({antialias:true});
+const renderer = new T.WebGLRenderer({antialias:!mobileDevice,powerPreference:'high-performance'});
  $('stage').dataset.fft='CPU';
-renderer.setPixelRatio(Math.min(devicePixelRatio,1));
+renderer.setPixelRatio(Math.min(devicePixelRatio,mobileDevice?.75:1));
 renderer.toneMapping = T.ACESFilmicToneMapping;
 $('stage').append(renderer.domElement);
 let highQuality=false, submerged=false;
@@ -517,7 +518,7 @@ function adjustRenderQuality(now){
  const moving=!introComplete||boatLoading||transition!==null||(!orbit.autoRotate&&(orbitHeld||now<interactionUntil));
  const desiredHigh=automaticQuality?!moving:manualHigh;
  if(highQuality!==desiredHigh){highQuality=desiredHigh;showQuality();}
- const desired=Math.min(devicePixelRatio,highQuality?1.35:1)*(automaticQuality&&moving?.78:1);
+ const desired=Math.min(devicePixelRatio,mobileDevice?(highQuality?1:.75):(highQuality?1.35:1))*(automaticQuality&&moving?.78:1);
  if(Math.abs(renderer.getPixelRatio()-desired)>.01)renderer.setDrawingBufferSize(innerWidth,innerHeight,desired);
 }
 showQuality();
@@ -768,7 +769,7 @@ function wakeFrame(){
 let wakeField=wakeFrame(),wakeEarlier=wakeFrame(),wakeOldest=wakeFrame();
 const wakeSpan=76, trail=[];
 const wakeSmoothed=new Float32Array(128*128*4);
-const fluidSize=96,fluidCell=.475;
+const fluidSize=mobileDevice?64:96,fluidCell=45.6/fluidSize;
 const fluidCount=fluidSize*fluidSize;
 let waterHeight=new Float32Array(fluidCount),waterX=new Float32Array(fluidCount),waterZ=new Float32Array(fluidCount);
 let heightNext=new Float32Array(fluidCount),xNext=new Float32Array(fluidCount),zNext=new Float32Array(fluidCount);
@@ -1038,7 +1039,7 @@ vec2 wake(vec2 p){
  return mix(texture2D(earlierWake,old).rg*oldMask.x*oldMask.y,
             texture2D(wakeTex,uv).rg*mask.x*mask.y,frameBlend.z);
 }`;
-const oceanGeometry=new T.PlaneGeometry(2,2,168,168);
+const oceanGeometry=new T.PlaneGeometry(2,2,mobileDevice?112:168,mobileDevice?112:168);
 const cabinProfile=new T.DataTexture(new Float32Array(128*96*4),128,96,T.RGBAFormat,T.FloatType);
 cabinProfile.minFilter=cabinProfile.magFilter=T.LinearFilter;
 let departingWakeA=null,departingWakeB=null;
@@ -1244,12 +1245,12 @@ for(let i=0;i<points.count;i++){
  points.setXYZ(i,spread(x),spread(y),0);
 }
 const ocean=new Reflector(oceanGeometry,{
- textureWidth:640,textureHeight:640,multisample:0,clipBias:.00015,
+ textureWidth:mobileDevice?320:640,textureHeight:mobileDevice?320:640,multisample:0,clipBias:.00015,
  shader:{
  uniforms:{departingWakeA:{value:null},departingWakeB:{value:null},departingWakeMix:{value:1},departingWakeOffsetA:{value:new T.Vector2()},departingWakeOffsetB:{value:new T.Vector2()},departingBoatOffset:{value:new T.Vector2()},departingMotion:{value:0},departingContact:{value:0},departingActive:{value:0},departingLuxury:{value:0},departingHull:{value:new T.Vector2()},departingStern:{value:new T.Vector2()},departingCount:{value:0},departingPoints:{value:departingOpening},departingInverse:{value:departingInverse},departingBounds:{value:departingVolumeBounds},departingVolume:{value:departingVolume},tailVisibility:{value:1},luxuryBoat:{value:0},sternShape:{value:new T.Vector2(-5,.85)},vesselEffects:{value:0},openingCount:{value:0},openingPoints:{value:projectedOpening},hullInverse:{value:hullInverse},hullVolumeBounds:{value:hullVolumeBounds},cabinProfile:{value:cabinProfile},clock:{value:0},sea:{value:.45},introOffset:{value:null},packetCount:{value:0},packetData:{value:packetData},packetShape:{value:packetShape},frameBlend:{value:new T.Vector3(1,1,1)},
  wakeOffset:{value:new T.Vector2()},earlierWakeOffset:{value:new T.Vector2()},
  earlierSwell:{value:null},earlierChop:{value:null},earlierWake:{value:null},yachtMask:{value:0},origin:{value:vesselPosition},swellTex:{value:null},chopTex:{value:null},wakeTex:{value:null},hull:{value:new T.Vector2(2,5.7)},course:{value:new T.Vector2(0,1)},motion:{value:0},waterContact:{value:1},draft:{value:0},profileLevel:{value:0},foamTex:{value:foamTexture},profile:{value:hullProfile},pose:{value:new T.Vector3()},
- sceneColor:{value:null},sceneDepth:{value:null},
+ sceneEffects:{value:1},sceneColor:{value:null},sceneDepth:{value:null},
  waterProjection:{value:projection},waterView:{value:viewMatrixWater},hq:{value:0},submerged:{value:0},sun:{value:sun},skyMode:{value:skyMode},tDiffuse:{value:null},textureMatrix:{value:new T.Matrix4()},color:{value:new T.Color()}},
  vertexShader:`${swells}
  uniform mat4 textureMatrix;
@@ -1313,6 +1314,7 @@ const ocean=new Reflector(oceanGeometry,{
  }
  uniform vec2 hull;
  uniform float motion, waterContact, draft, hq, submerged, profileLevel, yachtMask;
+ uniform float sceneEffects;
  uniform sampler2D profile, sceneColor, sceneDepth;
  uniform vec3 pose;
  uniform mat4 waterProjection, waterView;
@@ -1410,7 +1412,7 @@ const ocean=new Reflector(oceanGeometry,{
   vec3 transmission=exp(-vec3(.46,.17,.105)*waterPath);
   float refractionDistance=length(local/vec2(hull.x+.70,hull.y*1.25));
   float refractionWeight=smoothstep(.74,1.58,refractionDistance)*smoothstep(.34,1.1,waterPath);
-  if(bottomDepth<.9999 && refractionWeight>.001)base=mix(base,texture2D(sceneColor,refractionUV).rgb,transmission*.80*refractionWeight);
+  if(sceneEffects>.5 && bottomDepth<.9999 && refractionWeight>.001)base=mix(base,texture2D(sceneColor,refractionUV).rgb,transmission*.80*refractionWeight);
   vec3 color=mix(base,reflection,f);
   if(submerged>0.){
    vec3 transmitted=texture2D(sceneColor,refractionUV).rgb;
@@ -1621,6 +1623,9 @@ ocean.onBeforeRender=function(render,world,cam,...args){
  projection.copy(cam.projectionMatrix);viewMatrixWater.copy(cam.matrixWorldInverse);
  const w=Math.max(1,Math.ceil(innerWidth*(highQuality?.49:.32))),h=Math.max(1,Math.ceil(innerHeight*(highQuality?.49:.32)));
  if(scenePass.width!==w||scenePass.height!==h)scenePass.setSize(w,h);
+ const sceneEffects=!mobileDevice||highQuality||cam.position.y<.5;
+ seaUniforms.sceneEffects.value=sceneEffects?1:0;
+ if(sceneEffects){
  const target=render.getRenderTarget();
  ocean.visible=false;
  render.setRenderTarget(scenePass);
@@ -1629,6 +1634,7 @@ ocean.onBeforeRender=function(render,world,cam,...args){
  cam.layers.mask=layers;
  render.setRenderTarget(target);
  ocean.visible=true;
+ }
  if(cam.position.y>0)renderMirror.call(ocean,render,world,cam,...args);
 };
 let audioContext;
@@ -3116,7 +3122,11 @@ function advanceIntro(now,dt){
  speed=introStart.distance*(6*progress*(1-progress)+tangent*progress*(3*progress-2))/introDuration;
  if(progress===1)finishIntro();
 }
+let lastMobileFrame=-Infinity;
 renderer.setAnimationLoop(now=>{
+ if(document.hidden){last=now;return;}
+ if(mobileDevice&&!highQuality&&now-lastMobileFrame<1000/30-1)return;
+ lastMobileFrame=now;
  const elapsed=(now-last)/1000;
  const dt=T.MathUtils.clamp(elapsed,0,.05);last=now;
  if(!reduced.matches)time+=dt;
@@ -3163,7 +3173,7 @@ renderer.setAnimationLoop(now=>{
  seaUniforms.packetCount.value=updateWavePackets(time,reduced.matches?0:dt,nextWaveLevel,sin,cos,speed);
  const bowProbe=seaUniforms.hull.value.y;
  const incomingFlow=(incomingHeight(sin*(bowProbe-.5),cos*(bowProbe-.5))-incomingHeight(sin*(bowProbe+.5),cos*(bowProbe+.5)))*3.2;
- const fieldStep=1/30;
+ const fieldStep=mobileDevice&&!highQuality?1/20:1/30;
  if(time-lastField>=fieldStep){
    swell.update(time);chopField.update(time);
    const boatContact=introComplete||introStart!==null?seaUniforms.waterContact.value:0;
