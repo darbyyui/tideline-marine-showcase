@@ -223,6 +223,14 @@ button{touch-action:manipulation}
  .toolbar.is-closed .panel-arrow{border:1px solid #ffffffb0;border-radius:50%;background:#16415744}
 }
 
+
+@media (max-width:600px) and (orientation:portrait){
+ .compass{left:calc(50% - var(--compass-size) / 2);bottom:calc(110px + var(--compass-size) / 2);visibility:hidden;opacity:0;pointer-events:none;transition:opacity .25s ease}
+ .guide{left:50%;bottom:84px;visibility:hidden;opacity:0;transition:opacity .25s ease}
+ body:has(.toolbar.is-closed) .compass,body:has(.toolbar.is-closed) .guide{visibility:visible;opacity:1}
+ body:has(.toolbar.is-closed) .compass{pointer-events:auto}
+}
+
 </style>
 <body class="intro-active">
 <div id="stage"></div>
@@ -516,7 +524,7 @@ new ResizeObserver(()=>{if(!mobileToolbar.classList.contains('is-closed'))docume
 function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth;}
 function viewOffset(key){
  if(phonePortrait()&&key!=='side'){
-  const values=luxuryFraming?(key==='deck'?[0,4.2,-12]:key==='bow'?[0,7,23]:[0,7,-23]):(key==='deck'?[0,23,-9]:key==='bow'?[0,7,28]:[0,12,-28]);
+  const values=luxuryFraming?(key==='deck'?[-3.5,4.5,-13.5]:key==='bow'?[0,7,23]:[0,7,-23]):(key==='deck'?[0,23,-9]:key==='bow'?[0,7,28]:[0,12,-28]);
   return new T.Vector3(...values).multiplyScalar(luxuryFraming?1:framing).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180);
  }
  const offset=luxuryFraming&&key==='deck'
