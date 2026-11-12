@@ -455,7 +455,7 @@ $('dive').onclick=()=>{
  selectCamera($('dive'));
  const bearing=new T.Vector2(camera.position.x-introOffset.x,camera.position.z-introOffset.y);
  if(bearing.lengthSq()<.01)bearing.set(10,14);
- if(phonePortrait())bearing.set(-Math.sin(heading.rotation.y),-Math.cos(heading.rotation.y));
+ if(phonePortrait())bearing.set(Math.sin(heading.rotation.y),Math.cos(heading.rotation.y));
  bearing.normalize().multiplyScalar(17.2);
  waterTransition(new T.Vector3(introOffset.x+bearing.x,-5.2,introOffset.y+bearing.y),new T.Vector3(introOffset.x,-1.25,introOffset.y),1850);
 };
