@@ -197,6 +197,32 @@ button{touch-action:manipulation}
  .guide{left:59px;bottom:256px;font-size:10px}
 }
 
+
+@media (max-width:600px) and (orientation:portrait){
+ .button-row.secondary{grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+ .secondary #quality{display:none}
+ .secondary > .quality-bar{width:42px;min-width:0}
+ .secondary #daylight{font-size:0}
+ .secondary #daylight::after{content:attr(data-mobile-label);font-size:11px;white-space:nowrap}
+ #cruise{gap:2px;font-size:11px}
+ #cruise-label{width:2em;white-space:normal;word-break:break-all;line-height:1.25}
+ #cruise svg{width:14px;height:14px;flex-basis:14px}
+ #birds{white-space:normal;word-break:normal;line-height:1.25;padding:4px 12px}
+ .compass{bottom:calc(var(--mobile-toolbar-height,185px) + 52px + var(--compass-size) / 2)}
+ .guide{bottom:calc(var(--mobile-toolbar-height,185px) + 26px)}
+}
+
+
+@media (max-width:600px) and (orientation:portrait){
+ body{--compass-size:118px}
+ .compass .needle{width:78px;height:78px;margin:-39px}
+ .compass{left:18px}
+ .guide{left:77px;font-size:11px}
+ .lever-panel{top:39%}
+ .toolbar.is-closed{bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+ .toolbar.is-closed .panel-arrow{border:1px solid #ffffffb0;border-radius:50%;background:#16415744}
+}
+
 </style>
 <body class="intro-active">
 <div id="stage"></div>
@@ -466,14 +492,14 @@ function showQuality(){
  quality.setAttribute('aria-pressed',!automaticQuality&&manualHigh);
  auto.dataset.level=level;
  auto.setAttribute('aria-pressed',automaticQuality);
- const label=(automaticQuality?'自動畫質':'啟用自動畫質')+'：'+level;
+ const label=phonePortrait()?('目前 '+level+'，切換至 '+(manualHigh?'LD':'HD')):(automaticQuality?'自動畫質':'啟用自動畫質')+'：'+level;
  auto.setAttribute('aria-label',label);auto.title=label;
 }
 $('quality').onclick=()=>{
  manualHigh=automaticQuality?!highQuality:!manualHigh;
  automaticQuality=false;showQuality();
 };
-$('quality-auto').onclick=()=>{automaticQuality=true;showQuality();};
+$('quality-auto').onclick=()=>{if(phonePortrait())$('quality').onclick();else{automaticQuality=true;showQuality();}};
 orbit.addEventListener('start',()=>{orbitHeld=true;});
 orbit.addEventListener('end',()=>{orbitHeld=false;interactionUntil=performance.now()+180;});
 orbit.addEventListener('change',()=>{if(!orbit.autoRotate)interactionUntil=performance.now()+180;});
@@ -485,6 +511,8 @@ function adjustRenderQuality(now){
  if(Math.abs(renderer.getPixelRatio()-desired)>.01)renderer.setDrawingBufferSize(innerWidth,innerHeight,desired);
 }
 showQuality();
+const mobileToolbar=document.querySelector('.toolbar');
+new ResizeObserver(()=>{if(!mobileToolbar.classList.contains('is-closed'))document.body.style.setProperty('--mobile-toolbar-height',mobileToolbar.getBoundingClientRect().height+'px');}).observe(mobileToolbar);
 function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth;}
 function viewOffset(key){
  if(phonePortrait()&&key!=='side'){
@@ -548,6 +576,7 @@ const daylight=$('daylight');
 function nameDaylight(){
  const next=daylightModes[(dayIndex+1)%daylightModes.length].label;
  daylight.textContent='模式：'+daylightModes[dayIndex].label;
+ daylight.dataset.mobileLabel=daylightModes[dayIndex].label;
  daylight.title='切換至'+next;
  daylight.setAttribute('aria-label','目前'+daylightModes[dayIndex].label+'，切換至'+next);
 }
