@@ -2379,7 +2379,7 @@ function prepareLuxuryDetails(model){
  deckHitArea.name='aft-deck-hit-area';deckHitArea.position.set(0,0,-.9);hinge.add(deckHitArea);
  model.add(hinge,radar,rearRadar,gangway);
 }
-renderer.domElement.addEventListener('dblclick',event=>{
+function toggleDeckAt(event){
  if(!foldingDeck||!introComplete)return;
  const bounds=renderer.domElement.getBoundingClientRect();
  deckPointer.set((event.clientX-bounds.left)/bounds.width*2-1,-(event.clientY-bounds.top)/bounds.height*2+1);
@@ -2400,7 +2400,27 @@ renderer.domElement.addEventListener('dblclick',event=>{
  if(!deckRay.intersectObject(foldingDeck,true).length&&!deckRay.ray.intersectsBox(hitBounds))return;
  const folded=foldingDeck.userData.folded=!foldingDeck.userData.folded;
  deckMotion={start:performance.now(),from:foldingDeck.rotation.x,to:folded?Math.PI/2:0};
+}
+let lastDeckTap=null,lastTouchDouble=-Infinity,touchTapStart=null;
+const deckTouchPointers=new Set();
+renderer.domElement.addEventListener('pointerdown',event=>{
+ if(event.pointerType!=='touch')return;
+ deckTouchPointers.add(event.pointerId);
+ if(deckTouchPointers.size!==1){touchTapStart=null;lastDeckTap=null;return;}
+ touchTapStart={id:event.pointerId,x:event.clientX,y:event.clientY,time:performance.now()};
 });
+renderer.domElement.addEventListener('pointerup',event=>{
+ if(event.pointerType!=='touch')return;
+ const start=touchTapStart,now=performance.now();
+ const tap=start&&start.id===event.pointerId&&deckTouchPointers.size===1&&now-start.time<350&&Math.hypot(event.clientX-start.x,event.clientY-start.y)<12;
+ deckTouchPointers.delete(event.pointerId);touchTapStart=null;
+ if(!tap){lastDeckTap=null;return;}
+ if(lastDeckTap&&now-lastDeckTap.time<380&&Math.hypot(event.clientX-lastDeckTap.x,event.clientY-lastDeckTap.y)<32){
+  lastDeckTap=null;lastTouchDouble=now;toggleDeckAt(event);
+ }else lastDeckTap={time:now,x:event.clientX,y:event.clientY};
+});
+renderer.domElement.addEventListener('pointercancel',event=>{deckTouchPointers.delete(event.pointerId);touchTapStart=null;lastDeckTap=null;});
+renderer.domElement.addEventListener('dblclick',event=>{if(performance.now()-lastTouchDouble>650)toggleDeckAt(event);});
 function foldGangwayHandrails(progress,telescope=progress){
  if(!gangwayRoot)return;
  function rotatePost(y,z,front){
