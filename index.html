@@ -485,7 +485,6 @@ function adjustRenderQuality(now){
  if(Math.abs(renderer.getPixelRatio()-desired)>.01)renderer.setDrawingBufferSize(innerWidth,innerHeight,desired);
 }
 showQuality();
-let phoneOrbitPhase=0;
 function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth;}
 function viewOffset(key){
  if(phonePortrait()&&key!=='side'){
@@ -3182,12 +3181,7 @@ renderer.setAnimationLoop(now=>{
  updateBirds(time);
  updateDaylight(dt,reduced.matches);
  orbit.update(dt);
- if(phonePortrait()&&orbit.autoRotate&&!transition&&introComplete){
-  phoneOrbitPhase+=dt*.12;
-  const radius=luxuryFraming?25:35;
-  const along=new T.Vector3(0,7+Math.sin(phoneOrbitPhase)**2*radius,Math.cos(phoneOrbitPhase)*radius).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y);
-  camera.position.copy(orbit.target).add(along);camera.lookAt(orbit.target);
- }
+
  updateNavLights(now,reduced.matches);
  updateBearingRing(dt,reduced.matches,sample);
  const waterline=sample(camera.position.x-introOffset.x,camera.position.z-introOffset.y);
