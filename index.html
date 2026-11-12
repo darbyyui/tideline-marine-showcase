@@ -524,7 +524,7 @@ new ResizeObserver(()=>{if(!mobileToolbar.classList.contains('is-closed'))docume
 function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth;}
 function viewOffset(key){
  if(phonePortrait()&&key!=='side'){
-  const values=luxuryFraming?(key==='deck'?[-3.5,4.5,-13.5]:key==='bow'?[0,7,23]:[0,7,-23]):(key==='deck'?[0,23,-9]:key==='bow'?[0,7,28]:[0,12,-28]);
+  const values=luxuryFraming?(key==='deck'?[-4.5,5.4,-17.5]:key==='bow'?[0,7,23]:[0,7,-23]):(key==='deck'?[0,23,-9]:key==='bow'?[0,7,28]:[0,12,-28]);
   return new T.Vector3(...values).multiplyScalar(luxuryFraming?1:framing).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180);
  }
  const offset=luxuryFraming&&key==='deck'
