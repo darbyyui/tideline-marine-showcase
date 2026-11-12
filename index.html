@@ -434,9 +434,9 @@ try { showOpeningProgress(8,'啟動海面');start(); } catch (error) { document.
 function start(){
 const mobileDevice=matchMedia('(pointer:coarse)').matches||innerWidth<=600;
 const scene = new T.Scene();
-const renderer = new T.WebGLRenderer({antialias:!mobileDevice,powerPreference:'high-performance'});
+const renderer = new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
  $('stage').dataset.fft='CPU';
-renderer.setPixelRatio(Math.min(devicePixelRatio,mobileDevice?.75:1));
+renderer.setPixelRatio(Math.min(devicePixelRatio,1));
 renderer.toneMapping = T.ACESFilmicToneMapping;
 $('stage').append(renderer.domElement);
 let highQuality=false, submerged=false;
@@ -518,7 +518,7 @@ function adjustRenderQuality(now){
  const moving=!introComplete||boatLoading||transition!==null||(!orbit.autoRotate&&(orbitHeld||now<interactionUntil));
  const desiredHigh=automaticQuality?!moving:manualHigh;
  if(highQuality!==desiredHigh){highQuality=desiredHigh;showQuality();}
- const desired=Math.min(devicePixelRatio,mobileDevice?(highQuality?1:.75):(highQuality?1.35:1))*(automaticQuality&&moving?.78:1);
+ const desired=Math.min(devicePixelRatio,mobileDevice?(highQuality?1.5:1):(highQuality?1.35:1))*(automaticQuality&&moving?.78:1);
  if(Math.abs(renderer.getPixelRatio()-desired)>.01)renderer.setDrawingBufferSize(innerWidth,innerHeight,desired);
 }
 showQuality();
