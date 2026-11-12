@@ -516,11 +516,11 @@ new ResizeObserver(()=>{if(!mobileToolbar.classList.contains('is-closed'))docume
 function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth;}
 function viewOffset(key){
  if(phonePortrait()&&key!=='side'){
-  const values=luxuryFraming?(key==='deck'?[0,5.4,-12]:key==='bow'?[0,7,23]:[0,7,-23]):(key==='deck'?[0,23,-9]:key==='bow'?[0,7,28]:[0,12,-28]);
+  const values=luxuryFraming?(key==='deck'?[0,4.2,-12]:key==='bow'?[0,7,23]:[0,7,-23]):(key==='deck'?[0,23,-9]:key==='bow'?[0,7,28]:[0,12,-28]);
   return new T.Vector3(...values).multiplyScalar(luxuryFraming?1:framing).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180);
  }
  const offset=luxuryFraming&&key==='deck'
-  ?new T.Vector3(-6.2,3.6,-10.5).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y)
+  ?new T.Vector3(-6.2,2.8,-10.5).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y)
   :luxuryFraming&&key==='stern'
    ?new T.Vector3(3.5,6.5,-18.5).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y)
   :new T.Vector3(...presets[key]).multiplyScalar(framing*(framing>1&&key==='bow'?1.12:1)*(luxuryFraming&&key!=='bow'?.78:1));
@@ -531,7 +531,7 @@ function view(key, smooth=true){
   orbit.autoRotate=false;
   orbit.minDistance=luxuryFraming&&key==='deck'?6:11;
   const focus=target.clone();
-  if(luxuryFraming&&key==='deck')focus.add(new T.Vector3(0,1.15,-2.1).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y));
+  if(luxuryFraming&&key==='deck')focus.add(new T.Vector3(0,.5,-2.1).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y));
   if(luxuryFraming&&key==='stern')focus.add(new T.Vector3(0,.7,-2.6).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y));
   const end=viewOffset(key).add(focus);
   const crossing=submerged||camera.position.y<0||transition?.water;
