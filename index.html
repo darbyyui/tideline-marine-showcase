@@ -2715,6 +2715,7 @@ async function loadBoat(file){
   seaUniforms.sternShape.value.set(isLuxury?-5.05*boatScale:-5.7,seaUniforms.hull.value.x*(isLuxury?.90:.5));
   trail.length=0;lastStamp=-1;
   sail=isDefault?animateCanvas(model):null;
+  orbit.maxDistance=isLuxury?310:62;
   target.y=isDefault?5.5:1.2*boatScale;framing=isDefault?1.35:1;luxuryFraming=isLuxury;
   const nextBoatType=isLuxury?'luxury':isDefault?'sail':'custom';
   wakeSpan=isLuxury?380:76;fluidCell=(isLuxury?228:45.6)/fluidSize;
