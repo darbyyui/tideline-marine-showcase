@@ -1,16 +1,16 @@
-# 潮境 · Marine Showcase
+# POLISH™ MARINA
 
 Polish™ 互動船艇與海面展示。
 
 網站入口：`index.html`。透過 GitHub Pages 從 `main` 分支根目錄發布。
 
-船模以 gzip 分段檔案提供，瀏覽器合併後解壓；預設帆船載入完成後，在背景準備第二艘遊艇。請保留所有 `.part-01`、`.part-02` 檔案。
+船模以 gzip 分段檔案提供，瀏覽器合併後解壓；第一艘船載入完成後，會在背景準備其餘船型。請保留所有 `.part-01`、`.part-02` 檔案。
 
 ## 操作
 
 - 拖曳旋轉，Shift＋拖曳平移，滾輪或雙指縮放。
 - 羅盤調整航向；左右拉桿調整迎面浪與吃水。
-- 右上角切換帆船與豪華遊艇。
+- 工具列船型圖示可選擇帆船、豪華遊艇與 XO 270FC。
 - 遊艇甲板俯視模式自動展開伸縮弦梯，離開該視角自動收起。
 - 支援白天、夕陽、夜間、水下視角、航行控制與飛鳥。
 
@@ -26,8 +26,9 @@ Polish™ 互動船艇與海面展示。
 
 - `sail/`: open the sailboat directly.
 - `yacht/`: open the luxury yacht directly.
+- `xo270/`: open XO 270FC directly.
 
-The boat switch updates the address to the selected boat. Both routes have static entry pages so they work on static hosting and on reload. Assets are shared from the application folder. After editing `index.html`, run `python3 sync_routes.py` to refresh both entry pages before publishing.
+The boat switch updates the address to the selected boat. All three routes have static entry pages so they work on static hosting and on reload. Assets are shared from the application folder. After editing `index.html`, run `python3 sync_routes.py` to refresh all entry pages before publishing.
 
 
 ## Hull-driven foam
@@ -41,6 +42,12 @@ Inactive boats are prepared off scene: geometry/materials, texture upload, hull 
 
 ## Multi-boat lazy preparation
 
-`boatCatalog` is the registration point for every vessel. `registerBoat` accepts an id, label, GLB source and optional preparation callback/kind. Once the first vessel is fully warmed, one idle-time queue prepares the remaining registered vessels sequentially. Each entry stores a shared preparation promise, cached materials/textures, hull and deck water data, a fixed berth, and an invisible root in an isolated staging scene. Inactive roots never publish cabin masks or wake fields into the visible ocean. Repeated selection reuses cached data and berth coordinates. Imported GLBs are registered automatically and are included in boat cycling.
+`boatCatalog` is the registration point for every vessel. `registerBoat` accepts an id, label, GLB source and optional preparation callback/kind. Once the first vessel is fully warmed, one idle-time queue prepares the remaining registered vessels sequentially. Each entry stores a shared preparation promise, cached materials/textures, hull and deck water data, a fixed berth, and an invisible root in an isolated staging scene. Inactive roots never publish cabin masks or wake fields into the visible ocean. Repeated selection reuses cached data and berth coordinates. Imported GLBs are registered automatically and are included in the vessel catalog.
 
 `node tests/boat-berths.mjs` checks both startup choices and stable, separated positions for 32 registrations.
+
+## Current presentation
+
+All three boats use the shared vessel selector, background loading, hull-shaped wake and heading camera. Dragging the compass temporarily frames the whole horizontal bearing dial in parallel projection; release restores the original perspective. The vessel stays at its original draft. After a heading change while cruising, wake history clears, pauses for one second and grows downstream over five seconds.
+
+Default wave levels: sail 50, YATCH 66, XO 270FC 80. XO 270FC uses a twofold model scale and -0.22 default trim. Fonts and model assets are served locally.
