@@ -20,3 +20,27 @@ Polish™ 互動船艇與海面展示。
 船模與品牌素材由專案擁有人提供，各自保有原授權。
 
 本專案為互動概念展示，非工程或航海模擬器。
+
+
+## Boat URLs
+
+- `sail/`: open the sailboat directly.
+- `yacht/`: open the luxury yacht directly.
+
+The boat switch updates the address to the selected boat. Both routes have static entry pages so they work on static hosting and on reload. Assets are shared from the application folder. After editing `index.html`, run `python3 sync_routes.py` to refresh both entry pages before publishing.
+
+
+## Hull-driven foam
+
+Foam uses the same sampled hull volume as the dry-cabin mask. Each load rebuilds the waterline endpoints, stern width and length-based effect scale. The bow/side band uses distance to sampled contour segments; the stern plume shares its bubble grain and progressively loses density downstream. Unrecognized GLBs fall back to opaque geometry for hull section extraction. Models still need the existing upright orientation and normalization expected by the GLB loader.
+
+Run `node tests/hull-flow.mjs` to check unnamed hull extraction, pointed bows and fourfold scale invariance.
+
+Inactive boats are prepared off scene: geometry/materials, texture upload, hull sections and sailboat deck openings are cached. No inactive boat is attached to the display scene or wake uniforms. Cache preparation restores world matrices before reuse. Boat-switch flights retain the source distance limits until arrival and allocate distinct berths, including a yacht-first startup.
+
+
+## Multi-boat lazy preparation
+
+`boatCatalog` is the registration point for every vessel. `registerBoat` accepts an id, label, GLB source and optional preparation callback/kind. Once the first vessel is fully warmed, one idle-time queue prepares the remaining registered vessels sequentially. Each entry stores a shared preparation promise, cached materials/textures, hull and deck water data, a fixed berth, and an invisible root in an isolated staging scene. Inactive roots never publish cabin masks or wake fields into the visible ocean. Repeated selection reuses cached data and berth coordinates. Imported GLBs are registered automatically and are included in boat cycling.
+
+`node tests/boat-berths.mjs` checks both startup choices and stable, separated positions for 32 registrations.
