@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import * as T from '../three.module.js';
+const s=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const body=s.slice(s.indexOf('function scalePreparedWater('),s.indexOf('async function loadBoat('));
+const scale=new Function(body+';return scalePreparedWater;')();
+const original={profileData:new Float32Array([-2,2]),volumeData:new Float32Array([-2,2,1,6]),volumeBounds:new T.Vector4(-6,6,-1,3),opening:[new T.Vector3(1,2,3)]};
+assert.equal(scale(original,1),original);
+const a=scale(original,1.4);
+assert.ok(Math.abs(a.volumeData[0]+2.8)<1e-6);assert.equal(a.volumeData[2],1,'validity mask must never scale');assert.ok(Math.abs(a.volumeData[3]-8.4)<1e-6);
+assert.deepEqual(a.volumeBounds.toArray(),[-8.399999999999999,8.399999999999999,-1.4,4.199999999999999]);
+assert.deepEqual(a.opening[0].toArray(),[1.4,2.8,4.199999999999999]);assert.deepEqual(Array.from(original.volumeData),[-2,2,1,6]);
+console.log('PASS: XO water volume, profile and opening follow vessel scale; validity and cached data stay intact');
