@@ -1,0 +1,22 @@
+import {readFileSync} from 'node:fs';
+import {strict as assert} from 'node:assert';
+import {gzipSync} from 'node:zlib';
+const source=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const block=source.slice(source.indexOf('async function downloadModelPart('),source.indexOf('\nfunction animateCanvas'));
+function harness(fetch){return new Function('fetch','document','setTimeout',`const modelDownloads=new Map();${block};return {downloadModelPart,yachtBuffer};`)(fetch,{baseURI:'https://example.com/app/'},fn=>fn());}
+let calls=[];
+let h=harness(async(url,options)=>{calls.push({url,options});return calls.length===1?new Response('',{status:503}):new Response('ok');});
+assert.equal(new TextDecoder().decode(await h.downloadModelPart('boat.glb')),'ok');
+assert.equal(calls.length,2);assert.equal(calls[1].options.cache,'reload');assert.match(calls[1].url,/retry=/);
+let count=0;h=harness(async()=>{count++;return new Response('',{status:404});});
+await assert.rejects(h.downloadModelPart('missing.glb'),/404/);assert.equal(count,1);
+count=0;h=harness(async()=>{count++;throw new TypeError('network');});
+await assert.rejects(h.downloadModelPart('boat.glb'),/network/);assert.equal(count,3);
+const data=gzipSync(Buffer.from('parallel pieces preserve gzip byte order')),cut=Math.floor(data.length/2),pending=[];
+h=harness((url)=>new Promise(resolve=>pending.push({url,resolve})));
+const result=h.yachtBuffer();assert.equal(pending.length,2,'both requests start before either completes');
+pending[1].resolve(new Response(data.subarray(cut)));pending[0].resolve(new Response(data.subarray(0,cut)));
+assert.equal(Buffer.from(await result).toString(),'parallel pieces preserve gzip byte order');
+assert.equal(await h.yachtBuffer(),await result,'cached result avoids repeat download');
+for(const route of ['sail','yacht','xo270'])assert.ok(readFileSync(new URL(`../${route}/index.html`,import.meta.url),'utf8').includes('<base href="../">'));
+console.log('Model download: retry, permanent errors, retry cap, concurrency, byte order, cache and route base passed');
