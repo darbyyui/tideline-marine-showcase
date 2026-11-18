@@ -12,7 +12,9 @@ ${block}
 return {tick:adjustRenderQuality,sample:observeQualityPerformance,allowed(){return hdPerformanceAllowed;},ready(v){currentBoatReady=v;boatLoading=!v;showQuality();},moving(v){orbitHeld=v;},coasting(v){orbitMovedThisFrame=v;},state(){return {high:highQuality,ratio:renderer.ratio,mirror:mirror.width,disabled:$('quality-auto').disabled};}};
 `)($,{hidden:false});
 policy.tick(1000);assert.equal(policy.state().high,false);assert.equal(policy.state().disabled,true);
-policy.ready(true);policy.tick(1000);assert.equal(policy.state().high,true,'current vessel must unlock HD while other vessels are still preparing');assert.equal(policy.state().ratio,1.5);
+policy.ready(true);policy.tick(1000);assert.equal(policy.state().high,false,'startup remains LD after vessel preparation');
+policy.moving(true);policy.tick(1001);policy.moving(false);policy.tick(1002);assert.equal(policy.state().high,false,'startup LD persists after camera stops');
+$('quality-auto').onclick();policy.tick(1003);assert.equal(policy.state().high,true,'HD requires explicit opt-in and only the current vessel');assert.equal(policy.state().ratio,1.5);
 policy.moving(true);policy.tick(1010);assert.equal(policy.state().high,false);assert.equal(policy.state().ratio,1.5);
 policy.moving(false);policy.tick(2000);assert.equal(policy.state().high,true);
 $('quality-auto').onclick();policy.tick(2100);assert.equal(policy.state().high,false);
