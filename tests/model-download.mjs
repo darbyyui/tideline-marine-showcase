@@ -3,7 +3,7 @@ import {strict as assert} from 'node:assert';
 import {gzipSync} from 'node:zlib';
 const source=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const block=source.slice(source.indexOf('async function downloadModelPart('),source.indexOf('\nfunction animateCanvas'));
-function harness(fetch){return new Function('fetch','document','setTimeout',`const modelDownloads=new Map();${block};return {downloadModelPart,yachtBuffer};`)(fetch,{baseURI:'https://example.com/app/'},fn=>fn());}
+function harness(fetch){return new Function('fetch','document','setTimeout',`const modelDownloads=new Map();const modelAssets={load:(...args)=>downloadModelPart(...args)};${block};return {downloadModelPart,yachtBuffer};`)(fetch,{baseURI:'https://example.com/app/'},fn=>fn());}
 let calls=[];
 let h=harness(async(url,options)=>{calls.push({url,options});return calls.length===1?new Response('',{status:503}):new Response('ok');});
 assert.equal(new TextDecoder().decode(await h.downloadModelPart('boat.glb')),'ok');
@@ -20,3 +20,8 @@ assert.equal(Buffer.from(await result).toString(),'parallel pieces preserve gzip
 assert.equal(await h.yachtBuffer(),await result,'cached result avoids repeat download');
 for(const route of ['sail','yacht','xo270'])assert.ok(readFileSync(new URL(`../${route}/index.html`,import.meta.url),'utf8').includes('<base href="../">'));
 console.log('Model download: retry, permanent errors, retry cap, concurrency, byte order, cache and route base passed');
+calls=[];h=harness(async(url,options)=>{calls.push({url,options});return new Response('fresh');});
+await h.downloadModelPart('boat.glb',()=>{},undefined,true);assert.equal(calls[0].options.cache,'reload');assert.match(calls[0].url,/retry=/);
+const control=new AbortController();control.abort();count=0;h=harness(async()=>{count++;throw new TypeError('aborted');});
+await assert.rejects(h.downloadModelPart('boat.glb',()=>{},control.signal),/aborted/);assert.equal(count,1,'cancelled losing request must not retry');
+console.log('PASS: explicit origin refresh bypasses stale cache; cancelled racing downloads stop without retry');

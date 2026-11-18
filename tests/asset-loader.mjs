@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import {createHash,webcrypto} from 'node:crypto';
+import {gzipSync} from 'node:zlib';
+import {createAssetLoader,decodeWaterData} from '../asset-loader.mjs';
+const bytes=new TextEncoder().encode('unchanged boat bytes'),sha=createHash('sha256').update(bytes).digest('hex');
+const manifest={assets:{'./boat.glb':{bytes:bytes.length,sha256:sha,cdnPath:`models/${sha}/boat.glb`}}};
+function storage(){const objects=new Map();return {objects,async open(){return {async match(k){return objects.get(k)?.clone();},async put(k,r){objects.set(k,r.clone());},async delete(k){return objects.delete(k);}};}};}
+let calls=[],configReads=0,events=[];const cache=storage();
+const options={manifest,baseURL:'https://app.example/marina/',crypto:webcrypto,cacheStorage:cache,fetch:async()=>{configReads++;return Response.json({baseURL:'https://cdn.example/assets/',timeoutMs:5000});},download:async(url)=>{calls.push(url);return bytes;},onState:e=>events.push(e)};
+await createAssetLoader(options).load('./boat.glb');assert.equal(calls.length,1);assert.match(calls[0],/cdn.example\/assets\/models\//);
+calls=[];configReads=0;await createAssetLoader(options).load('./boat.glb');assert.equal(calls.length,0);assert.equal(configReads,0,'verified persistent hit must not wait for configuration');assert.equal(events.at(-1).source,'persistent-cache');
+for(const key of cache.objects.keys())cache.objects.set(key,new Response(new Uint8Array(bytes.length)));
+await createAssetLoader(options).load('./boat.glb');assert.equal(calls.length,1,'corrupt cache must be replaced');
+calls=[];const corrupt=async url=>{calls.push(url);return url.includes('cdn.example')?new Uint8Array(bytes.length):bytes;};
+await createAssetLoader({...options,cacheStorage:storage(),download:corrupt}).load('./boat.glb');assert.equal(calls.length,2);assert.match(calls[1],/^https:\/\/app.example/);
+calls=[];await createAssetLoader({...options,cacheStorage:{open:async()=>{throw Error('quota');}}}).load('./boat.glb');assert.equal(calls.length,1,'storage failure must not prevent download');
+let resolveDownload;calls=[];const concurrent=createAssetLoader({...options,cacheStorage:storage(),fetch:async()=>Response.json({baseURL:null}),download:url=>{calls.push(url);return new Promise(resolve=>{resolveDownload=resolve;});}});
+const one=concurrent.load('./boat.glb'),two=concurrent.load('./boat.glb');while(!resolveDownload)await new Promise(r=>setImmediate(r));resolveDownload(bytes);assert.deepEqual(await one,await two);assert.equal(calls.length,1);
+let attempts=0;const retry=createAssetLoader({...options,cacheStorage:storage(),fetch:async()=>Response.json({baseURL:null}),download:async()=>{if(++attempts===1)throw Error('offline');return bytes;}});
+await assert.rejects(retry.load('./boat.glb'),/offline/);assert.deepEqual(await retry.load('./boat.glb'),bytes);
+const water={schema:1,revision:'revision',profile:Array(128).fill(0),volume:Array(128*96*4).fill(0),bounds:[-6,6,-1,3],opening:[[0,1,2]]};
+const decoded=await decodeWaterData(gzipSync(JSON.stringify(water)),'revision');assert.equal(decoded.volumeData.length,49152);assert.deepEqual(decoded.opening,[[0,1,2]]);
+await assert.rejects(decodeWaterData(gzipSync(JSON.stringify(water)),'stale'),/Incompatible/);
+await assert.rejects(decodeWaterData(gzipSync(JSON.stringify({...water,volume:[0]})),'revision'),/Invalid/);
+console.log('PASS: verified persistent hits, corrupt-cache replacement, CDN fallback, quota tolerance, concurrency, failure retry and versioned water data');
+let cdnCancelled=false,originRequests=0;
+await createAssetLoader({...options,cacheStorage:storage(),fetch:async()=>Response.json({baseURL:'https://cdn.example/',hedgeDelayMs:300}),download:(url,report,signal)=>{
+ if(url.includes('cdn.example'))return new Promise((resolve,reject)=>signal.addEventListener('abort',()=>{cdnCancelled=true;reject(Error('cancelled'));},{once:true}));
+ originRequests++;return Promise.resolve(bytes);
+}}).load('./boat.glb');
+assert.equal(originRequests,1);assert.equal(cdnCancelled,true,'slow cold CDN request must be cancelled after origin wins');
+let unexpectedOrigin=0;
+await createAssetLoader({...options,cacheStorage:storage(),fetch:async()=>Response.json({baseURL:'https://cdn.example/',hedgeDelayMs:300}),download:async(url,report)=>{
+ if(!url.includes('cdn.example'))unexpectedOrigin++;
+ report(1);await new Promise(resolve=>setTimeout(resolve,350));return bytes;
+}}).load('./boat.glb');assert.equal(unexpectedOrigin,0,'healthy CDN streaming must not trigger duplicate origin traffic');
+let reloads=[];
+await createAssetLoader({...options,cacheStorage:storage(),fetch:async()=>Response.json({baseURL:null}),download:async(url,report,signal,reload)=>{reloads.push(reload);return reload?bytes:new Uint8Array(bytes.length);}}).load('./boat.glb');
+assert.deepEqual(reloads,[undefined,true],'stale origin bytes require a forced reload');
+let githubRequests=[];
+await createAssetLoader({...options,manifest:{assets:{'./boat.glb':{...manifest.assets['./boat.glb'],githubPath:'boat.glb'}}},cacheStorage:storage(),fetch:async()=>Response.json({baseURL:'https://cdn.example/pinned/',layout:'github'}),download:async url=>{githubRequests.push(url);return bytes;}}).load('./boat.glb');
+assert.equal(githubRequests[0],'https://cdn.example/pinned/boat.glb');
+console.log('PASS: cold-CDN origin hedge, loser cancellation, no duplicate healthy stream, origin cache refresh and commit-pinned GitHub layout');

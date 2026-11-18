@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import * as T from '../three.module.js';
+const source=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const volume=source.slice(source.indexOf('function buildHullVolume('),source.indexOf('function updateCabinProjection('));
+const profile=source.slice(source.indexOf('async function runGeometryWork('),source.indexOf('updateProfile(demo,5.7);'));
+let yields=0;
+const work=new Function('T','window',volume+profile+';return {buildHullVolume,buildHullVolumeAsync,updateProfile,updateProfileAsync};')(T,{scheduler:{async yield(){yields++;}}});
+const root=new T.Group(),model=new T.Mesh(new T.SphereGeometry(4,72,48),new T.MeshBasicMaterial());root.add(model);model.rotation.set(.12,.23,.04);
+const syncVolume={image:{data:new Float32Array(128*96*4)}},asyncVolume={image:{data:new Float32Array(128*96*4)}},syncBounds=new T.Vector4(),asyncBounds=new T.Vector4();
+work.buildHullVolume(model,syncVolume,syncBounds,root);await work.buildHullVolumeAsync(model,asyncVolume,asyncBounds,root);
+assert.deepEqual(asyncVolume.image.data,syncVolume.image.data);assert.deepEqual(asyncBounds,syncBounds);assert.ok(yields>0,'dense geometry must yield to other browser work');
+const a={image:{data:new Float32Array(128)}},b={image:{data:new Float32Array(128)}};
+work.updateProfile(model,6,0,a,root);await work.updateProfileAsync(model,6,0,b,root);assert.deepEqual(a.image.data,b.image.data);
+console.log('PASS: scheduled geometry yields while preserving exact waterline and hull volume');
