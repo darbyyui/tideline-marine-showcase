@@ -435,9 +435,9 @@ header h1{transform:scaleX(1.4);transform-origin:left center}
 .heading-control .compass.has-yaw .south-pointer{transform:translateY(12px) scaleY(.65)}
 .heading-control .compass.has-yaw .bearing{visibility:visible}
 
-.heading-control .compass .needle .south-pointer{opacity:.1}
+.heading-control .compass .needle .south-pointer{opacity:1;fill-opacity:.1}
 .heading-control .compass:not(.is-dragging) .needle path{stroke-opacity:0}
-.heading-control .compass.is-dragging .needle path{stroke-opacity:1}
+.heading-control .compass:is(:hover,:focus-visible,.is-dragging) .needle path{stroke-opacity:1}
 
 .heading-control .compass .needle{opacity:1}
 .heading-control .compass .needle .north-pointer{opacity:.3}
