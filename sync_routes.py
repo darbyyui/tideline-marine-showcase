@@ -5,4 +5,4 @@ source = (root / 'index.html').read_text()
 for route in ('sail', 'yacht', 'xo270'):
     folder = root / route
     folder.mkdir(exist_ok=True)
-    (folder / 'index.html').write_text(source)
+    (folder / 'index.html').write_text(source.replace('<base href="./">', '<base href="../">', 1))
