@@ -21,7 +21,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 #stage{position:fixed;inset:0;background:linear-gradient(#163242,#95b7be 48%,#174752 49%,#071f29)}
 #boat-switch{position:absolute;top:var(--edge);right:var(--edge);padding:8px 0;border:0;border-radius:0;background:transparent;z-index:3;font-size:12px}
 #boat-switch:hover{background:transparent}
-header{position:absolute;top:0;left:0;padding:clamp(20px,4vw,64px);pointer-events:none;}
+header{position:absolute;top:0;left:0;opacity:.85;padding:clamp(20px,4vw,64px);pointer-events:none;}
 h1{font-family:"Zen Dots",Futura,sans-serif;text-transform:uppercase;font-size:clamp(34px,6vw,76px);font-weight:400;letter-spacing:.06em;margin:6px 0 3px}
 .eyebrow{letter-spacing:.29em;font-size:11px;font-weight:700;color:#fff}
 .sub{color:#e2f2f4;margin:0;font-family:Syncopate,Futura,sans-serif;font-size:clamp(11px,1.2vw,15px);letter-spacing:.11em;font-weight:700}
@@ -95,7 +95,7 @@ output{position:absolute;right:var(--edge);bottom:3px;display:block;text-align:r
 .compass .east{right:8px}.compass .west{left:8px}
 .compass .needle{position:absolute;left:50%;top:50%;width:78px;height:78px;margin:-39px;transform:scaleY(var(--ellipse)) rotate(var(--angle));pointer-events:none}
 .needle::before,.needle::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:13px;height:24px}
-.needle::before{top:1px;clip-path:polygon(50% 0,100% 100%,0 100%);background:linear-gradient(90deg,#71b6c8 50%,#dbfaff 50%)}
+.needle::before{top:1px;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2213%22%20height%3D%2224%22%20viewBox%3D%220%200%2013%2024%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%3E%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%23567d88%22%2F%3E%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%232b4d5b%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M6.5%201L12.2%2023.3H.8Z%22%20fill%3D%22url%28%23g%29%22%20stroke%3D%22white%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E") center/100% 100% no-repeat}
 .needle::after{bottom:1px;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(90deg,#567d88 50%,#2b4d5b 50%)}
 .compass .bearing{left:50%;top:50%;transform:translate(-50%,-50%);color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 1px 3px #061a23}
 .view-guide,.guide{text-align:center;color:#e2f2f4;font:11px/1.45 system-ui,sans-serif;pointer-events:none}
@@ -128,18 +128,18 @@ body.sea-textures-ready .intro-white.loading-sea{backdrop-filter:blur(0px);-webk
 .loading-sea .intro-loading{color:#fff;text-shadow:none}
 .loading-sea .intro-loading-track{background:#ffffff40}
 .loading-sea #loading-fill{background:#fff}
-.intro-credit{text-align:center;color:#737373;padding:20px}
-.intro-credit img{display:block;width:clamp(165px,28vw,300px);height:auto;margin:0 auto;filter:brightness(0) invert(.45)}
-.intro-credit p{font-family:Syncopate,Futura,sans-serif;font-weight:700;margin:12px auto 0;width:min(220px,64vw);display:flex;font-size:clamp(6px,.85vw,9px);letter-spacing:0}
+.intro-credit{--intro-content-width:clamp(165px,28vw,300px);text-align:center;color:#737373;padding:20px}
+.intro-credit img{opacity:.85;display:block;width:var(--intro-content-width);height:auto;margin:0 auto;filter:brightness(0) invert(.45)}
+.intro-credit p{font-family:Syncopate,Futura,sans-serif;font-weight:700;margin:24px auto 0;width:var(--intro-content-width);display:flex;font-size:clamp(6px,.85vw,9px);letter-spacing:0}
 .intro-credit p span{flex:1 1 0;min-width:0;text-align:center}
-.intro-loading{width:min(220px,64vw);margin:26px auto 0;font-size:11px;color:#737373}
+.intro-loading{width:var(--intro-content-width);margin:38px auto 0;font-size:11px;color:#737373}
 .intro-loading,.intro-loading-track,#loading-fill{box-shadow:none;text-shadow:none;filter:none}
 .intro-loading-track{height:3px;border-radius:999px;background:#e9e9e9;overflow:hidden}
 #loading-fill{display:block;width:100%;height:100%;background:#858585;transform:scaleX(0);transform-origin:left;transition:none;will-change:transform}
-.intro-loading-caption{display:flex;justify-content:space-between;gap:8px;margin-top:7px;font-variant-numeric:tabular-nums}
+.intro-loading-caption{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font-variant-numeric:tabular-nums}
 @media(prefers-reduced-motion:reduce){#loading-fill{transition:none}}
 body.intro-active header{z-index:11;opacity:0;transition:opacity 1.575s ease}
-body.intro-active.sea-revealed header{opacity:1}
+body.intro-active.sea-revealed header{opacity:.85}
 body.intro-active :is(.toolbar,.lever-panel,.compass,.guide,output,#boat-switch){visibility:hidden;opacity:0}
 body.intro-complete :is(.toolbar,.lever-panel,.compass,.guide,#boat-switch){animation:intro-interface 1s ease .8s both}
 @keyframes intro-interface{from{opacity:0}to{opacity:1}}
@@ -409,6 +409,38 @@ header h1{transform:scaleX(1.4);transform-origin:left center}
 .toolbar.is-choosing-boat .toolbar-actions .panel-arrow{border-radius:50%;aspect-ratio:1;padding:0}
 
 @media(max-width:600px) and (orientation:portrait){.toolbar .boat-choice{grid-template-columns:repeat(var(--boat-count,3),minmax(0,1fr));justify-content:stretch;gap:5px}}
+
+.heading-control .compass .needle{opacity:.3;transition:opacity .2s ease}
+.heading-control .compass:is(:hover,:focus-visible,.is-dragging) .needle{opacity:1}
+
+.heading-control .compass :is(.north,.east,.south,.west){right:auto;bottom:auto;transform:translate(-50%,-50%)}
+.heading-control .compass .bearing{visibility:hidden}
+.heading-control .compass.is-dragging .bearing{visibility:visible}
+
+.heading-control .compass .compass-plane{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px;transform:scaleY(var(--ellipse)) rotate(var(--north-angle,0deg));pointer-events:none}
+.heading-control .compass .compass-plane .north{left:50%;top:0;transform:translate(-50%,-50%) rotate(0deg)}
+.heading-control .compass .compass-plane .east{left:100%;top:50%;transform:translate(-50%,-50%) rotate(90deg)}
+.heading-control .compass .compass-plane .south{left:50%;top:100%;transform:translate(-50%,-50%) rotate(180deg)}
+.heading-control .compass .compass-plane .west{left:0;top:50%;transform:translate(-50%,-50%) rotate(-90deg)}
+.heading-control .compass .compass-plane .needle{transform:rotate(var(--heading-angle,0deg));width:78px;height:78px;margin:-39px}
+.heading-control .compass .needle::before,.heading-control .compass .needle::after{display:none}
+.heading-control .compass .needle svg{display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
+.heading-control .compass .needle path{pointer-events:visiblePainted;cursor:grab}
+.heading-control .compass.is-dragging .needle path{cursor:grabbing}
+.heading-control .compass .bearing{pointer-events:none}
+
+.heading-control .compass .needle path{transition:transform .2s ease}
+.heading-control .compass.has-yaw .north-pointer{transform:translateY(-12px) scaleY(.65)}
+.heading-control .compass.has-yaw .south-pointer{transform:translateY(12px) scaleY(.65)}
+.heading-control .compass.has-yaw .bearing{visibility:visible}
+
+.heading-control .compass .needle .south-pointer{opacity:.1}
+.heading-control .compass:not(.is-dragging) .needle path{stroke-opacity:0}
+.heading-control .compass.is-dragging .needle path{stroke-opacity:1}
+
+.heading-control .compass .needle{opacity:1}
+.heading-control .compass .needle .north-pointer{opacity:.3}
+.heading-control .compass:is(:hover,:focus-visible,.is-dragging) .needle .north-pointer{opacity:1}
 </style>
 <body class="intro-active">
 <div id="stage"></div>
@@ -463,9 +495,9 @@ header h1{transform:scaleX(1.4);transform-origin:left center}
  <div id="trim-panel" class="lever">
   <label for="trim">吃水</label>
   <button type="button" data-adjust="trim" data-step="1" aria-label="增加吃水">+</button>
-  <div class="lever-track zero-marked"><input id="trim" type="range" min="-1.6" max="1.6" step=".02" value="0" aria-orientation="vertical"></div>
+  <div class="lever-track zero-marked"><input id="trim" type="range" min="-1.6" max="2.5" step=".02" value="0" aria-orientation="vertical"></div>
   <button type="button" data-adjust="trim" data-step="-1" aria-label="減少吃水">−</button>
-  <input id="trim-value" type="number" min="-1.6" max="1.6" step=".02" value="0" inputmode="decimal" aria-label="吃水數值">
+  <input id="trim-value" type="number" min="-1.6" max="2.5" step=".02" value="0" inputmode="decimal" aria-label="吃水數值">
  </div>
 </section>
 <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true"><defs>
@@ -483,8 +515,7 @@ header h1{transform:scaleX(1.4);transform-origin:left center}
 <input id="heading" type="hidden" value="0">
 <div class="heading-control"><div class="guide">拖曳指針改變航向</div>
 <div id="compass" class="compass" role="slider" tabindex="0" aria-label="船首方向" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0" aria-valuetext="0 度">
- <span class="north" aria-hidden="true">N</span><span class="east" aria-hidden="true">E</span><span class="south" aria-hidden="true">S</span><span class="west" aria-hidden="true">W</span>
- <span class="needle" aria-hidden="true"></span><span id="bearing" class="bearing" aria-hidden="true">000°</span>
+ <span class="compass-plane" aria-hidden="true"><span class="north">N</span><span class="east">E</span><span class="south">S</span><span class="west">W</span><span class="needle"><svg viewBox="-39 -39 78 78" aria-hidden="true"><defs><linearGradient id="needle-tone"><stop offset="50%" stop-color="#567d88"/><stop offset="50%" stop-color="#2b4d5b"/></linearGradient></defs><path class="north-pointer" d="M0 -37L6 0H-6Z" fill="white" stroke="white" stroke-width="1.1" stroke-linejoin="round"/><path class="south-pointer" d="M-6 0H6L0 37Z" fill="url(#needle-tone)" stroke="white" stroke-width="1.1" stroke-linejoin="round"/></svg></span></span><span id="bearing" class="bearing" aria-hidden="true"></span>
 </div>
 </div>
 <script type="importmap">{"imports": {"three": "./three.module.js", "orbit": "./OrbitControls.js", "gltf": "./GLTFLoader.js", "geometry": "./BufferGeometryUtils.js", "reflector": "./Reflector.js"}}</script>
@@ -725,7 +756,7 @@ for(const button of document.querySelectorAll('[data-adjust]')){
  };
 }
 const compass=$('compass');
-let headingRevision=0;
+let headingRevision=0,headingDragStart=0,headingAdjusted=false,headingPointerStart=null;
 function setHeading(angle){
  const bearing=((Math.round(angle)%360)+360)%360;
  if(Number($('heading').value)!==bearing)headingRevision++;
@@ -733,24 +764,28 @@ function setHeading(angle){
  compass.style.setProperty('--angle',bearing+'deg');
  compass.setAttribute('aria-valuenow',bearing);
  compass.setAttribute('aria-valuetext',bearing+' 度');
- $('bearing').textContent=String(bearing).padStart(3,'0')+'°';
+ const delta=((bearing-headingDragStart+540)%360)-180;
+ $('bearing').textContent=(compassDragging||headingAdjusted)?(delta>0?'+':delta<0?'−':'±')+Math.abs(delta)+'°':'';
 }
 function pointCompass(event){
  if(compassFrozen)return;
  const box=compass.getBoundingClientRect();
  const x=event.clientX-box.left-box.width/2,y=event.clientY-box.top-box.height/2;
- if(Math.hypot(x,y)>6)setHeading(Math.atan2(x/box.width,-y/box.height)*180/Math.PI);
+ if(Math.hypot(x,y)>6)setHeading(Math.atan2(x/box.width,-y/box.height)*180/Math.PI-(parseFloat(compass.style.getPropertyValue('--north-angle'))||0));
 }
 let beginHeadingCamera=()=>{},endHeadingCamera=()=>{};
 let compassDragging=false,compassFrozen=false;
 compass.addEventListener('pointerdown',event=>{
- if(event.button!==0||compassFrozen)return;
- compass.setPointerCapture(event.pointerId);compassDragging=true;compass.classList.add('is-dragging');beginHeadingCamera();pointCompass(event);
+ if(event.button!==0||compassFrozen||!event.target.closest('.needle'))return;
+ if(!headingAdjusted)headingDragStart=Number($('heading').value);headingPointerStart={x:event.clientX,y:event.clientY};compass.setPointerCapture(event.pointerId);compassDragging=true;compass.classList.add('is-dragging');beginHeadingCamera();pointCompass(event);
 });
 compass.addEventListener('pointermove',event=>{
- if(compass.hasPointerCapture(event.pointerId))pointCompass(event);
+ if(compass.hasPointerCapture(event.pointerId)){
+  if(headingPointerStart&&Math.hypot(event.clientX-headingPointerStart.x,event.clientY-headingPointerStart.y)>2){headingAdjusted=true;compass.classList.add('has-yaw');}
+  pointCompass(event);
+ }
 });
-compass.addEventListener('lostpointercapture',()=>{compassDragging=false;compass.classList.remove('is-dragging');endHeadingCamera();});
+compass.addEventListener('lostpointercapture',()=>{compassDragging=false;headingPointerStart=null;if(!headingAdjusted)$('bearing').textContent='';compass.classList.remove('is-dragging');endHeadingCamera();});
 compass.addEventListener('keydown',event=>{
  if(compassFrozen){event.preventDefault();return;}
  const steps={ArrowUp:1,ArrowRight:1,ArrowDown:-1,ArrowLeft:-1,PageUp:15,PageDown:-15};
@@ -2447,6 +2482,8 @@ function animateCanvas(model){
  };
 }
 $('reset').onclick=()=>{
+ if(compassFrozen)return;
+ headingAdjusted=false;headingDragStart=0;compass.classList.remove('has-yaw');$('bearing').textContent='';
  if(selectedBoat!=='sail'){
   if(compassFrozen)return;
   setHeading(0);return;
@@ -2648,7 +2685,8 @@ function lantern(color,diameter){
 }
 const portLamp=lantern(0xff2428,.57),starboardLamp=lantern(0x27ff80,.57);
 const sternLamp=lantern(0xfff2d9,.64),mastBeacon=lantern(0xff2025,.85);
-let hasMast=false;
+let hasMast=false,xoBeaconLensMaterial=null;
+const xoBeaconRed=new T.Color(0xff2025);
 const navCamera=new T.Vector3(),navVertex=new T.Vector3(),mastTip=new T.Vector3();
 function fitNavLights(model,halfLength,deckHeight){
  const bowHeight=deckHeight+.035;
@@ -2673,8 +2711,10 @@ function fitNavLights(model,halfLength,deckHeight){
   const marker=model.getObjectByName('xo-nav-'+id);
   if(marker){marker.getWorldPosition(navVertex);heading.worldToLocal(navVertex);lamp.fixture.position.copy(navVertex);if(id==='beacon'){mastTip.copy(navVertex);mastTip.y-=.055;}}
  }
- const beaconColor=model.getObjectByName('xo-nav-beacon')?0xfff2d9:0xff2025;
- mastBeacon.light.material.color.setHex(beaconColor);mastBeacon.glow.material.color.setHex(beaconColor);
+ const xoBeacon=Boolean(model.getObjectByName('xo-nav-beacon'));
+ mastBeacon.fixture.userData.xoBeacon=xoBeacon;
+ mastBeacon.light.material.color.setHex(0xff2025);mastBeacon.glow.material.color.setHex(0xff2025);
+ mastBeacon.glow.scale.setScalar(xoBeacon?1.6:.85);mastBeacon.glow.material.depthTest=!xoBeacon;
  if(Number.isFinite(mastTip.y)){
   mastBeacon.fixture.position.copy(mastTip);mastBeacon.fixture.position.y+=.055;hasMast=true;
  }
@@ -2687,6 +2727,10 @@ function showLantern(lamp,strength){
 function updateNavLights(now,reducedMotion){
  const night=skyMode.z;
  navLights.visible=night>.015;
+ if(xoBeaconLensMaterial){
+  xoBeaconLensMaterial.color.lerpColors(xoBeaconLensMaterial.userData.dayColor,xoBeaconRed,night);
+  xoBeaconLensMaterial.emissiveIntensity=0;
+ }
  if(!navLights.visible)return;
  navCamera.copy(camera.position);heading.worldToLocal(navCamera);
  // In local coordinates the bow is +Z and starboard is -X.
@@ -2696,9 +2740,13 @@ function updateNavLights(now,reducedMotion){
  showLantern(portLamp,night*abeam*(1-side));
  showLantern(starboardLamp,night*abeam*side);
  showLantern(sternLamp,night*T.MathUtils.smoothstep(Math.abs(bearing),110.5,114.5));
- const phase=(now*.001)%1.05;
- const blink=reducedMotion?.58:T.MathUtils.smoothstep(phase,0,.065)*(1-T.MathUtils.smoothstep(phase,.135,.435));
- showLantern(mastBeacon,hasMast?night*blink:0);
+ const xoBeacon=mastBeacon.fixture.userData.xoBeacon;
+ const phase=(now*.001)%(xoBeacon?3:1.05);
+ const blink=reducedMotion?.58:xoBeacon
+  ?T.MathUtils.smoothstep(phase,0,.06)*(1-T.MathUtils.smoothstep(phase,.22,1.9))
+  :T.MathUtils.smoothstep(phase,0,.065)*(1-T.MathUtils.smoothstep(phase,.135,.435));
+ showLantern(mastBeacon,hasMast?night*blink*(xoBeacon?1.6:1):0);
+ if(xoBeacon&&xoBeaconLensMaterial)xoBeaconLensMaterial.emissiveIntensity=night*blink*3;
 }
 let drivenPropellers=[];
 let foldingDeck=null,radarSpinner=null,rearRadarSpinner=null,deckMotion=null,gangwayRoot=null,gangwayTip=null,gangwayMotion=null,gangwayProgress=0;
@@ -3039,6 +3087,7 @@ function prepareLuxuryDetails(model){
  applyCabinShading();
 }
 function toggleDeckAt(event){
+ if(selectedBoat==='xo270'){toggleXOPaintAt(event);return;}
  if(!foldingDeck||!introComplete)return;
  const bounds=renderer.domElement.getBoundingClientRect();
  deckPointer.set((event.clientX-bounds.left)/bounds.width*2-1,-(event.clientY-bounds.top)/bounds.height*2+1);
@@ -3080,6 +3129,8 @@ renderer.domElement.addEventListener('pointerup',event=>{
 });
 renderer.domElement.addEventListener('pointercancel',event=>{deckTouchPointers.delete(event.pointerId);touchTapStart=null;lastDeckTap=null;});
 renderer.domElement.addEventListener('dblclick',event=>{if(performance.now()-lastTouchDouble>650)toggleDeckAt(event);});
+
+
 function foldGangwayHandrails(progress,telescope=progress){
  if(!gangwayRoot)return;
  function rotatePost(y,z,front){
@@ -3269,6 +3320,55 @@ async function prepareModelAsset(model,kind='custom'){
   if(kind==='sail')$('stage').dataset.sailReady='true';
   return {model,profileData,volumeData:volume.image.data,volumeBounds,opening};
 }
+const xoPaint=Object.fromEntries(['roof','rim'].map(part=>[part,{from:{value:1},to:{value:1},progress:{value:1},span:{value:new T.Vector2(0,1)},started:null}]));
+function installXOPaint(material,part){
+ const paint=xoPaint[part],previous=material.onBeforeCompile;
+ material.onBeforeCompile=shader=>{
+  previous(shader);
+  shader.vertexShader='varying float xoPaintX;\n'+shader.vertexShader;
+  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n xoPaintX=position.y;');
+  Object.assign(shader.uniforms,{xoPaintFrom:paint.from,xoPaintTo:paint.to,xoPaintProgress:paint.progress,xoPaintSpan:paint.span,xoPaintDark:{value:new T.Color(0x02060c)}});
+  shader.fragmentShader=`varying float xoPaintX;uniform float xoPaintFrom,xoPaintTo,xoPaintProgress;
+   uniform vec2 xoPaintSpan;uniform vec3 xoPaintDark;
+   float xoPaintAmount(){
+    if(xoPaintProgress>=.999)return xoPaintTo;
+    float across=(xoPaintX-xoPaintSpan.x)/max(.00001,xoPaintSpan.y-xoPaintSpan.x);
+    float front=xoPaintProgress*1.08-.04;
+    return mix(xoPaintFrom,xoPaintTo,1.-smoothstep(front-.018,front+.018,across));
+   }
+   vec3 xoPaintGlow(){
+    float across=(xoPaintX-xoPaintSpan.x)/max(.00001,xoPaintSpan.y-xoPaintSpan.x);
+    float distanceToFront=abs(across-(xoPaintProgress*1.08-.04));
+    float glowGate=smoothstep(0.,.06,xoPaintProgress)*(1.-smoothstep(.94,1.,xoPaintProgress));
+    float halo=exp(-pow(distanceToFront/.045,2.));
+    float core=exp(-pow(distanceToFront/.008,2.));
+    return (vec3(.10,.55,1.25)*halo+vec3(2.2,2.8,3.2)*core)*glowGate;
+   }
+  `+shader.fragmentShader;
+  shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance+=xoPaintGlow()*'+(part==='rim'&&!material.userData.xoSeamCap?'rimTop':'1.')+';');
+  if(part==='roof'||material.userData.xoSeamCap){
+   shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n diffuseColor.rgb=mix(xoPaintDark,vec3(.784,.776,.745),xoPaintAmount());');
+   shader.fragmentShader=shader.fragmentShader.replace('#include <lights_fragment_end>','#include <lights_fragment_end>\n reflectedLight.directSpecular=vec3(0.);reflectedLight.indirectSpecular=vec3(0.);');
+  }
+ };
+ material.customProgramCacheKey=()=> 'xo-brush-'+part+(material.userData.xoSeamCap?'-cap':'')+'-v8';
+ material.userData.xoPaintPart=part;
+}
+function toggleXOPaintAt(event){
+ if(!imported||!introComplete||boatLoading)return;
+ const rect=renderer.domElement.getBoundingClientRect();
+ deckPointer.set((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);
+ deckRay.setFromCamera(deckPointer,camera);imported.updateWorldMatrix(true,true);
+ const hit=deckRay.intersectObject(imported,true)[0];if(!hit)return;
+ const part=hit.object.userData.xoPaintPart;if(!part)return;
+ if(part==='rim'){
+  const point=hit.object.worldToLocal(hit.point.clone());
+  if(point.z>-.0025||point.z<-.0155)return;
+ }
+ const paint=xoPaint[part];if(paint.started!==null)return;
+ paint.from.value=paint.to.value;paint.to.value=1-paint.to.value;paint.progress.value=0;paint.started=performance.now();
+ $('stage').dataset['xo'+(part==='roof'?'Roof':'Rim')+'Paint']=paint.to.value?'white':'black';
+}
 let xoPreparation=null;
 function prepareXO(report=null){
  if(xoPreparation)return xoPreparation;
@@ -3284,7 +3384,7 @@ function prepareXO(report=null){
    const radar=/engine066/.test(partName),deck=/engine072/.test(partName),roof=/engine025/.test(partName),roofSeal=/engine0(?:17|18|19|20)/.test(partName);
    const cleat=/engine0(?:21|22|4[1-9]|5[0-2])/.test(partName);
    const convert=source=>{
-    const key=source.uuid+(cleat?'-cleat':'')+(radar?'-radar':'')+(deck?'-deck':'')+(roof?'-roof':'')+(roofSeal?'-seal':'');
+    const key=source.uuid+(cleat?'-cleat':'')+(radar?'-radar':'')+(deck?'-deck':'')+(roof?'-roof':'')+(roofSeal?'-seal':'')+(/engine054/.test(partName)?'-bow-fitting':'')+(/engine053/.test(partName)?'-hull-strip':'');
     if(materialCache.has(key))return materialCache.get(key);
     let material=source.clone();material.metalness=0;material.roughness=source.name==='mat_7'?.84:.48;
     material.transparent=false;material.opacity=1;material.depthWrite=true;
@@ -3310,7 +3410,7 @@ function prepareXO(report=null){
      material.envMap=getGelcoatEnvironment(dayIndex);material.envMapIntensity=.48;allGelcoatMaterials.add(material);
     }
     if(roof&&(source.name==='mat_4'||source.name==='mat_2')){
-     material.color.set(0xe5e4df);material.metalness=0;material.roughness=.34;
+     material.color.set(0x030910);material.metalness=0;material.roughness=.34;
      if(material.isMeshPhysicalMaterial){material.clearcoat=.5;material.clearcoatRoughness=.20;}
     }
     if(roofSeal&&(source.name==='mat_1'||source.name==='mat_2')){
@@ -3324,20 +3424,99 @@ function prepareXO(report=null){
      material.envMap=getGelcoatEnvironment(dayIndex);material.envMapIntensity=.85;allGelcoatMaterials.add(material);
     }
     if(deck&&source.name==='mat_4'){
+     // Keep each connected top trim panel intact, including its vertical joining faces.
+     // Exterior hull panels extend below the deck and remain outside this selection.
+     const g=mesh.geometry,p=g.attributes.position,ix=g.index,parents=Int32Array.from({length:p.count},(_,i)=>i);
+     const root=i=>{while(parents[i]!==i){parents[i]=parents[parents[i]];i=parents[i];}return i;};
+     const used=new Set(),n=ix?ix.count:p.count;
+     for(let i=0;i<n;i+=3){
+      const a=ix?ix.getX(i):i,b=ix?ix.getX(i+1):i+1,c=ix?ix.getX(i+2):i+2;
+      used.add(a);used.add(b);used.add(c);parents[root(b)]=root(a);parents[root(c)]=root(a);
+     }
+     const groups=new Map();
+     for(const i of used){
+      const r=root(i),z=p.getZ(i),y=p.getY(i),b=groups.get(r)||[Infinity,-Infinity,Infinity,-Infinity];
+      b[0]=Math.min(b[0],z);b[1]=Math.max(b[1],z);b[2]=Math.min(b[2],y);b[3]=Math.max(b[3],y);groups.set(r,b);
+     }
+     const topMask=new Float32Array(p.count),blackCurves=new Float32Array(p.count);
+     for(const i of used){
+      const b=groups.get(root(i));
+      const aftCockpit=b[2]>-.0223&&b[0]>-.006&&b[1]<-.0028;
+      topMask[i]=(b[0]>-.0155&&b[1]<-.0045)||aftCockpit?1:0;
+      const frontCurve=b[2]>-.055&&b[3]<-.037&&b[0]>-.0116&&b[1]<-.0100;
+      const rearReturns=b[2]>-.0251&&b[3]<-.0200&&b[0]>-.0155&&b[0]<-.006&&b[1]<-.0045;
+      const sideCurve=b[2]>-.0555&&b[3]<-.024&&b[0]>-.0106&&b[1]<-.0092;
+      // The narrow deck-facing lip is separate from the black window-base fairing.
+      const deckLip=b[2]>-.0554&&b[3]<-.0522&&b[0]>-.0106&&b[1]<-.0101;
+      blackCurves[i]=(frontCurve||rearReturns||sideCurve)&&!deckLip?1:0;
+     }
+     g.setAttribute('xoTopPanelMask',new T.BufferAttribute(topMask,1));
+     g.setAttribute('xoBlackCurveMask',new T.BufferAttribute(blackCurves,1));
+     const pos=mesh.geometry.attributes.position,idx=mesh.geometry.index,widths=new Float32Array(128);
+     mesh.geometry.computeBoundingBox();
+     const ymin=mesh.geometry.boundingBox.min.y,ymax=mesh.geometry.boundingBox.max.y,count=idx?idx.count:pos.count;
+     for(let k=0;k<128;k++){
+      const y=ymin+(ymax-ymin)*(k+.001)/127.002;
+      for(let i=0;i<count;i+=3)for(let e=0;e<3;e++){
+       const a=idx?idx.getX(i+e):i+e,b=idx?idx.getX(i+(e+1)%3):i+(e+1)%3;
+       const ya=pos.getY(a),yb=pos.getY(b);
+       if((y-ya)*(y-yb)>0||Math.abs(yb-ya)<1e-10)continue;
+       widths[k]=Math.max(widths[k],Math.abs(pos.getX(a)+(pos.getX(b)-pos.getX(a))*(y-ya)/(yb-ya)));
+      }
+     }
      material.onBeforeCompile=shader=>{
-      shader.vertexShader='varying vec3 xoRimPosition,xoRimNormal;\n'+shader.vertexShader;
-      shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n xoRimPosition=position;xoRimNormal=normal;');
-      shader.fragmentShader='varying vec3 xoRimPosition,xoRimNormal;\n'+shader.fragmentShader;
+      shader.uniforms.xoHullWidths={value:widths};shader.uniforms.xoHullY={value:new T.Vector2(ymin,ymax)};
+      shader.fragmentShader='uniform float xoHullWidths[128];uniform vec2 xoHullY;\n'+shader.fragmentShader;
+      shader.vertexShader='attribute float xoTopPanelMask,xoBlackCurveMask;varying float xoTopPanel,xoBlackCurve;varying vec3 xoRimPosition,xoRimNormal;\n'+shader.vertexShader;
+      shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n xoRimPosition=position;xoRimNormal=normal;xoTopPanel=xoTopPanelMask;xoBlackCurve=xoBlackCurveMask;');
+      shader.fragmentShader='varying float xoTopPanel,xoBlackCurve;varying vec3 xoRimPosition,xoRimNormal;\n'+shader.fragmentShader;
       shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`
        #include <color_fragment>
-       float rimTop=smoothstep(.03,.24,-normalize(xoRimNormal).z)
-        *smoothstep(.0025,.0045,-xoRimPosition.z)*(1.-smoothstep(.0135,.0155,-xoRimPosition.z));
-       diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.82,.82,.79),rimTop);
+       float profile=clamp((xoRimPosition.y-xoHullY.x)/(xoHullY.y-xoHullY.x)*127.,0.,127.);
+       int pi=int(floor(profile));
+       float width=mix(xoHullWidths[pi],xoHullWidths[min(pi+1,127)],fract(profile));
+       float innerSurface=step(.00045,width-abs(xoRimPosition.x))*step(.0093,-xoRimPosition.z)*step(0.,-dot(xoRimNormal.xy,vec2(xoRimPosition.x,xoRimPosition.y+.043)));
+       float aftCorner=step(-.030,xoRimPosition.y)*(1.-step(-.014,xoRimPosition.y))
+        *(1.-step(.0117,abs(xoRimPosition.x)))*step(.007,-xoRimPosition.z);
+       float cabinJoin=step(-.064,xoRimPosition.y)*(1.-step(-.020,xoRimPosition.y))
+        *(1.-step(.0114*sqrt(max(0.,1.-pow(clamp((-xoRimPosition.y-.053)/.010,0.,1.),2.))),abs(xoRimPosition.x)))*step(.007,-xoRimPosition.z);
+       float bowJoin=(1.-step(-.058,xoRimPosition.y))*step(.0004,width-abs(xoRimPosition.x))*step(.009,-xoRimPosition.z);
+       float rimTop=max(max(max(max(step(.03,-normalize(xoRimNormal).z),innerSurface),aftCorner),cabinJoin),bowJoin)
+        *step(.0045,-xoRimPosition.z)*(1.-step(.0155,-xoRimPosition.z));
+       float exteriorHull=step(.025,xoRimNormal.z)*step(.00001,dot(xoRimNormal.xy,vec2(xoRimPosition.x,xoRimPosition.y+.043)));
+       rimTop=max(rimTop*(1.-exteriorHull),xoTopPanel);
+       float fixedBlackCurve=step(.5,xoBlackCurve)*mix(1.,step(-.0545,xoRimPosition.y)*(1.-step(-.0200,xoRimPosition.y)),step(1.5,xoBlackCurve));
+       float bowStem=(1.-step(-.0854,xoRimPosition.y))*step(-.0098,xoRimPosition.z);
+       float whiteFrontJoin=step(-.0554,xoRimPosition.y)*(1.-step(-.0522,xoRimPosition.y))*step(-.01050,xoRimPosition.z)*(1.-step(-.0098,xoRimPosition.z));
+       float lowerBow=(1.-step(-.076,xoRimPosition.y))*step(-.006,xoRimPosition.z);
+       fixedBlackCurve=max(max(fixedBlackCurve,bowStem),lowerBow)*(1.-whiteFrontJoin);
+       rimTop=max(rimTop,whiteFrontJoin);
+       rimTop*=1.-fixedBlackCurve;
+       diffuseColor.rgb=mix(diffuseColor.rgb,mix(xoPaintDark,vec3(.82,.82,.79),xoPaintAmount()),rimTop);
+       diffuseColor.rgb=mix(diffuseColor.rgb,xoPaintDark,fixedBlackCurve);
       `);
+      shader.fragmentShader=shader.fragmentShader.replace('#include <lights_fragment_end>','#include <lights_fragment_end>\n reflectedLight.directSpecular*=1.-max(exteriorHull,fixedBlackCurve);reflectedLight.indirectSpecular*=1.-max(exteriorHull,fixedBlackCurve);');
      };
      material.customProgramCacheKey=()=> 'xo-white-gunwale-top-v2';
     }
+    if(/engine053/.test(partName)&&source.name==='mat_6'){
+     const previousCompile=material.onBeforeCompile;
+     material.onBeforeCompile=shader=>{
+      previousCompile?.(shader);
+      shader.vertexShader='varying float xoBowStripY;\n'+shader.vertexShader;
+      shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n xoBowStripY=position.y;');
+      shader.fragmentShader='varying float xoBowStripY;\n'+shader.fragmentShader;
+      shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n float bowStripBlack=1.-step(-.076,xoBowStripY);diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.0006,.0018,.0037),bowStripBlack);');
+      shader.fragmentShader=shader.fragmentShader.replace('#include <lights_fragment_end>','#include <lights_fragment_end>\n reflectedLight.directSpecular*=1.-bowStripBlack;reflectedLight.indirectSpecular*=1.-bowStripBlack;');
+     };
+     material.customProgramCacheKey=()=> 'xo-black-bow-strip-v1';
+    }
+    if(/engine054/.test(partName)){material.color.set(0x02060c);material.envMap=null;material.metalness=0;material.roughness=1;if(material.isMeshPhysicalMaterial){material.specularIntensity=0;material.clearcoat=0;}allGelcoatMaterials.delete(material);}
     if(radar&&source.name==='mat_8')material.color.set(0xe4e5e3);
+    if(radar&&source.name==='mat_9'){
+     material.userData.dayColor=material.color.clone();material.emissive.set(0xff2025);material.emissiveIntensity=0;material.toneMapped=false;xoBeaconLensMaterial=material;
+    }
+
     if(deck&&source.name==='mat_3'){
      material.roughness=.86;material.metalness=0;
      material.onBeforeCompile=shader=>{
@@ -3358,19 +3537,77 @@ function prepareXO(report=null){
      };
      material.customProgramCacheKey=()=> 'xo-longitudinal-golden-timber-v4';
     }
+    const paintPart=roof&&['mat_4','mat_2'].includes(source.name)?'roof':deck&&source.name==='mat_4'?'rim':null;
+    if(paintPart){
+     material.color.set(0x02060c);material.metalness=.08;material.roughness=.36;
+     if(material.isMeshPhysicalMaterial)material.clearcoat=0;
+     material.envMap=null;material.envMapIntensity=1;allGelcoatMaterials.delete(material);
+     if(paintPart==='roof'){material.roughness=1;material.metalness=0;if(material.isMeshPhysicalMaterial)material.specularIntensity=0;}
+     installXOPaint(material,paintPart);
+    }
     materialCache.set(key,material);return material;
    };
    mesh.material=Array.isArray(mesh.material)?mesh.material.map(convert):convert(mesh.material);
+   mesh.userData.xoPaintPart=[].concat(mesh.material).find(material=>material.userData.xoPaintPart)?.userData.xoPaintPart||null;
    mesh.userData.hullSurface=/engine053/.test(partName)||(deck&&[].concat(mesh.material).some(material=>['mat_0','mat_3','mat_4'].includes(material.name)));
   });
   // Close the recessed transom with a solid hull skin, in source model coordinates.
   // Its lower edge follows the V bottom; the drive and propeller stay outside it.
   const transomSource=model.getObjectByName('XO_270_Front_cabin_Inboard_engine072_2');
   if(transomSource){
+   // Bridge the narrow top seam geometrically, without recoloring the outer hull.
+   const source=transomSource.geometry,pos=source.attributes.position,norm=source.attributes.normal,idx=source.index;
+   const rows=[],count=idx?idx.count:pos.count,steps=96;
+   for(let k=0;k<=steps;k++){
+    const y=-.0858+(.0858-.018)*k/steps,hits=[];let width=0;
+    for(let i=0;i<count;i+=3)for(let e=0;e<3;e++){
+     const a=idx?idx.getX(i+e):i+e,b=idx?idx.getX(i+(e+1)%3):i+(e+1)%3;
+     const ya=pos.getY(a),yb=pos.getY(b);
+     if((y-ya)*(y-yb)>0||Math.abs(yb-ya)<1e-10)continue;
+     const t=(y-ya)/(yb-ya),x=Math.abs(pos.getX(a)+(pos.getX(b)-pos.getX(a))*t);
+     const z=pos.getZ(a)+(pos.getZ(b)-pos.getZ(a))*t,nz=norm.getZ(a)+(norm.getZ(b)-norm.getZ(a))*t;
+     width=Math.max(width,x);hits.push({x,z,nz});
+    }
+    const tops=hits.filter(h=>h.x>width*.88&&h.nz<-.8&&h.z<-.0045&&h.z>-.0135);
+    const z=tops.length?Math.min(...tops.map(h=>h.z))-.000025:(rows.at(-1)?.z??-.009);
+    rows.push({y,width,z});
+   }
+   const heights=rows.map(r=>r.z);
+   rows.forEach((r,k)=>{r.z=Math.min(...heights.slice(Math.max(0,k-1),Math.min(steps+1,k+2)));});
+   const verts=[],indices=[];
+   for(const side of [-1,1]){
+    const offset=verts.length/3;
+    rows.forEach((r,k)=>{
+     verts.push(side*r.width*.88,r.y,r.z,side*(r.width+.000015),r.y,r.z);
+     if(k<steps){const a=offset+k*2;indices.push(a,a+1,a+2,a+1,a+3,a+2);}
+    });
+   }
+   const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(verts,3));geometry.setIndex(indices);geometry.computeVertexNormals();
+   const material=new T.MeshStandardMaterial({color:0x02060c,roughness:.65,metalness:0,side:T.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+   material.userData.xoSeamCap=true;installXOPaint(material,'rim');
+   const cap=new T.Mesh(geometry,material);cap.name='xo-gunwale-seam-bridge';cap.userData.xoPaintPart='rim';
+   cap.matrix.copy(transomSource.matrix);cap.matrix.decompose(cap.position,cap.quaternion,cap.scale);transomSource.parent.add(cap);
+
+  }
+
+  if(transomSource){
    const vertices=[],indices=[],segments=48;
+   const original=transomSource.geometry,sp=original.attributes.position,si=original.index,n=si?si.count:sp.count;
+   const sternEdge=(x,z,fallback)=>{
+    let aft=-Infinity;
+    for(let i=0;i<n;i+=3){
+     const a=si?si.getX(i):i,b=si?si.getX(i+1):i+1,c=si?si.getX(i+2):i+2;
+     const ax=sp.getX(a),az=sp.getZ(a),u=sp.getX(b)-ax,v=sp.getX(c)-ax,r=sp.getZ(b)-az,t=sp.getZ(c)-az,det=u*t-v*r;
+     if(Math.abs(det)<1e-15)continue;
+     const k=((x-ax)*t-(z-az)*v)/det,l=(u*(z-az)-r*(x-ax))/det;
+     if(k<-.00001||l<-.00001||k+l>1.00001)continue;
+     aft=Math.max(aft,sp.getY(a)+k*(sp.getY(b)-sp.getY(a))+l*(sp.getY(c)-sp.getY(a)));
+    }
+    return Number.isFinite(aft)?aft+.000015:fallback;
+   };
    for(let i=0;i<=segments;i++){
     const x=(i/segments*2-1)*.01185,edge=Math.abs(x)/.01185;
-    vertices.push(x,-.00010-.0034*Math.pow(edge,1.55),-.00495);
+    vertices.push(x,sternEdge(x,-.00495,-.00010-.0034*Math.pow(edge,1.55)),-.00495);
     vertices.push(x,-.0035,.00140-.00088*Math.pow(edge,6.));
     if(i<segments){const a=i*2;indices.push(a,a+1,a+2,a+1,a+3,a+2);}
    }
@@ -3387,6 +3624,15 @@ function prepareXO(report=null){
    if(id){mesh.geometry.computeBoundingBox();const marker=new T.Object3D();marker.name='xo-nav-'+id;marker.position.copy(mesh.geometry.boundingBox.getCenter(new T.Vector3()));lampMarkers.push([mesh,marker]);}
   });
   lampMarkers.forEach(([mesh,marker])=>mesh.add(marker));
+  // Source X is port-to-starboard after the model's orientation transform.
+  for(const part of ['roof','rim']){
+   let left=Infinity,right=-Infinity;
+   model.traverse(mesh=>{
+    if(!mesh.isMesh||mesh.userData.xoPaintPart!==part)return;
+    mesh.geometry.computeBoundingBox();left=Math.min(left,mesh.geometry.boundingBox.min.y);right=Math.max(right,mesh.geometry.boundingBox.max.y);
+   });
+   if(Number.isFinite(left)&&right>left)xoPaint[part].span.value.set(left,right);
+  }
   let propellerMesh;model.traverse(mesh=>{if(mesh.isMesh&&/engine063$/.test(mesh.name))propellerMesh=mesh;});
   if(propellerMesh){
    propellerMesh.geometry.computeBoundingBox();
@@ -3498,7 +3744,7 @@ function nextRegisteredBoat(){
 }
 registerBoat({id:'sail',label:'帆船',displayName:'SAIL',brand:'',model:'',kind:'sail',source:null,route:'sail/',prepare:prepareSail});
 registerBoat({id:'luxury',label:'豪華遊艇',displayName:'YATCH',brand:'',model:'',kind:'luxury',source:'luxury',route:'yacht/',scale:5.2,cameraScale:4,prepare:prepareLuxury});
-registerBoat({id:'xo270',label:'XO 270FC',displayName:'270FC',brand:'XO',model:'',brandLogo:'xo-logo.svg',icon:'fishing',kind:'motor',source:'xo270',route:'xo270/',scale:2,prepare:prepareXO});
+registerBoat({id:'xo270',label:'XO 270FC',displayName:'270FC',brand:'XO',model:'',brandLogo:'xo-logo.svg',icon:'fishing',kind:'motor',source:'xo270',route:'xo270/',scale:1.4,prepare:prepareXO});
 function fitBoatSwitchOffset(focus,offset){
  if(!imported)return offset;
  const bounds=new T.Box3().setFromObject(imported,true);
@@ -4186,13 +4432,14 @@ function beginBoatEntryPresentation(){
  // model fade and a slower spherical flight to the selected preset.
  positionDirectEntrySea();introBoatOnScreen=true;introHornPlayed=true;
  finishIntro();primeBoatWater();positionDirectEntrySea();
+ restartBoatReveal(imported);boatRevealWaitForView=false;
  if(!reduced.matches){
   view(currentCameraView);
   if(selectedBoat==='luxury'&&!phonePortrait()){
    const focus=target.clone().add(new T.Vector3(0,4,0)),offset=new T.Vector3(20.5,2.25,1.3).multiplyScalar(4.8).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y);
    cameraOrbitTransition(focus.clone().add(offset),focus,3600);
   }
-  transition.duration=3600;
+  transition.duration=3600;boatRevealStarted=transition.time;
   $('stage').dataset.entryPhase='fading-turning';
   transition.onComplete=()=>{$('stage').dataset.entryPhase='ready';};
  }else{view(currentCameraView,false);$('stage').dataset.entryPhase='ready';}
@@ -4513,7 +4760,16 @@ renderer.setAnimationLoop(now=>{
  underwaterFill.color.setRGB(.60*skyMode.x+.95*skyMode.y+.32*skyMode.z,.84*skyMode.x+.65*skyMode.y+.48*skyMode.z,1.*skyMode.x+.22*skyMode.y+.92*skyMode.z);
  underwaterFill.groundColor.setRGB(.21*skyMode.x+.37*skyMode.y+.018*skyMode.z,.33*skyMode.x+.24*skyMode.y+.045*skyMode.z,.47*skyMode.x+.06*skyMode.y+.16*skyMode.z);
  underwaterFill.intensity=below*(skyMode.y*.18+skyMode.z*1.55);
+ for(const paint of Object.values(xoPaint))if(paint.started!==null){
+  paint.progress.value=reduced.matches?1:Math.min(1,(now-paint.started)/1400);
+  $('stage').dataset.xoBrushPhase=paint.progress.value>.3&&paint.progress.value<.8?'sweeping':paint.progress.value>=1?'ready':'starting';
+  if(paint.progress.value>=1)paint.started=null;
+ }
  adjustRenderQuality(now);
+ const northAngle=Math.atan2(camera.position.x-orbit.target.x,camera.position.z-orbit.target.z)+Math.PI;
+ compass.style.setProperty('--north-angle',(northAngle*180/Math.PI)+'deg');
+ compass.style.setProperty('--angle',(northAngle*180/Math.PI+Number($('heading').value))+'deg');
+ compass.style.setProperty('--heading-angle',Number($('heading').value)+'deg');
  const pitch=Math.PI/2-orbit.getPolarAngle();
  const ellipse=.593+.407*T.MathUtils.smoothstep(pitch,Math.PI/4,Math.PI*75/180);
  const ellipseValue=ellipse.toFixed(3);
