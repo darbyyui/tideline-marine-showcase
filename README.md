@@ -51,3 +51,11 @@ Inactive boats are prepared off scene: geometry/materials, texture upload, hull 
 All three boats use the shared vessel selector, background loading, hull-shaped wake and heading camera. Dragging the compass temporarily frames the whole horizontal bearing dial in parallel projection; release restores the original perspective. The vessel stays at its original draft. After a heading change while cruising, wake history clears, pauses for one second and grows downstream over five seconds.
 
 Default wave levels: sail 50, YATCH 66, XO 270FC 80. XO 270FC uses a twofold model scale and -0.22 default trim. Fonts and model assets are served locally.
+
+
+Adaptive quality (2026-11-18): HD unlocks after all registered boat assets are prepared. HD preference temporarily renders in LD during camera/heading movement and restores after 650ms of quiet; manual LD persists. LD prioritizes a 30 FPS ceiling, a 0.65M pixel budget and no above-water scene reflection/refraction passes. HD retains detailed water and physical boat materials with a 1.8M pixel budget, 640px desktop/384px mobile planar reflection, and a 0.36M refraction pixel budget. Matching water captures are reused within a frame to avoid duplicate work from physical-glass transmission rendering. Background hull/profile calculations share synchronous and scheduled generators so output geometry stays identical.
+
+Performance evidence and limitations: `performance-findings-20261118.md`. The Lighthouse reports and diagnostic HTML/profiles are local investigation artifacts, not app release assets.
+
+
+Model delivery/precomputation (2026-11-18): `asset-loader.mjs`, generated `asset-manifest.mjs`, and `asset-host.json` provide verified persistent model caching, commit-pinned optional jsDelivr routing, cold-CDN origin hedging and origin fallback. Built-in vessels consume versioned precomputed water sidecars with runtime calculation fallback. Models and materials are unchanged. See `CLOUD-ASSETS.md` for configuration, build/verification and release files.
