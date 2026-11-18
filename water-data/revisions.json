@@ -1,0 +1,14 @@
+{
+  "sail": {
+    "revision": "521fb788f25a4fa7c04531976abd550b84e2d12f3dbe8dacbc12135717faa6be",
+    "path": "./water-data/sail.521fb788f25a4fa7c045.json.gz"
+  },
+  "luxury": {
+    "revision": "14fe21a934bf3da830b97cee7c6794093bb75e189859752894dfd12a891a8e10",
+    "path": "./water-data/luxury.14fe21a934bf3da830b9.json.gz"
+  },
+  "motor": {
+    "revision": "09ed8e7829f663b429a7122be0a45410518ccbb8c0a8fd0160c8e69ab95b7e3f",
+    "path": "./water-data/motor.09ed8e7829f663b429a7.json.gz"
+  }
+}
