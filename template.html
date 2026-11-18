@@ -447,10 +447,10 @@ header h1{transform:scaleX(1.4);transform-origin:left center}
 .toolbar #boat-switch[aria-expanded="true"] svg{transform:scaleX(-1)}
 #boat-switch svg{transition:transform .28s ease}
 @media(max-width:600px){
- .heading-control{width:96px;top:var(--mobile-compass-top,48px);height:var(--mobile-compass-height,64px);gap:0;justify-content:space-between}
- .heading-control .compass .compass-plane{width:70.8px;height:70.8px;margin:-35.4px}
+ .heading-control{width:96px;top:var(--mobile-compass-top,48px);height:auto;min-height:var(--mobile-compass-height,64px);gap:12px;justify-content:space-between}
+ .heading-control .compass .compass-plane{width:56px;height:56px;margin:-28px}
  .heading-control .compass{--compass-size:70.8px}
- .heading-control .compass .needle{width:46.8px;height:46.8px;margin:-23.4px}
+ .heading-control .compass .compass-plane .needle{width:40px;height:40px;margin:-20px}
  .heading-control .compass :is(.north,.east,.south,.west){font-size:7px}
  .heading-control .guide{font-size:8px}
 }
