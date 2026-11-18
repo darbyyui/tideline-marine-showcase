@@ -1020,7 +1020,7 @@ $('dive').onclick=async()=>{
  bearing.normalize().multiplyScalar(luxuryFraming?68.8:17.2);
  cameraOrbitTransition(new T.Vector3(introOffset.x+bearing.x,luxuryFraming?-20.8:-5.2,introOffset.y+bearing.y),new T.Vector3(introOffset.x,luxuryFraming?-5:-1.25,introOffset.y),1850);
 };
-let automaticQuality=true,manualHigh=true,orbitHeld=false,interactionUntil=0,boatLoading=true;
+let automaticQuality=false,manualHigh=false,orbitHeld=false,interactionUntil=0,boatLoading=true;
 let allBoatAssetsReady=false,currentBoatReady=false,orbitMovedThisFrame=false;
 let hdPerformanceAllowed=true,hdPerformanceSamples=[],hdPerformanceLast=0,hdPerformanceWarmUntil=0;
 let waterQualityBlend=0,qualityUpdatedAt=0;
@@ -1083,6 +1083,8 @@ const mobileToolbar=document.querySelector('.toolbar');
 new ResizeObserver(()=>{if(!mobileToolbar.classList.contains('is-closed'))document.body.style.setProperty('--mobile-toolbar-height',mobileToolbar.getBoundingClientRect().height+'px');}).observe(mobileToolbar);
 function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth;}
 function viewOffset(key){
+ if(!phonePortrait()&&selectedBoat==='xo270'&&key==='deck')return new T.Vector3(.025,24.3,0).multiplyScalar(framing).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180);
+ if(phonePortrait()&&selectedBoat==='xo270'&&key==='deck')return new T.Vector3(0,31,-12.1).multiplyScalar(framing).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180);
  if(phonePortrait()&&selectedBoat==='xo270'&&key==='bow')return new T.Vector3(7,2.2,28).multiplyScalar(framing).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180);
  if(phonePortrait()&&key!=='side'){
   const values=luxuryFraming?(key==='deck'?[-4.5,5.4,-17.5]:key==='bow'?[0,7,23]:[0,7,-23]):(key==='deck'?[0,23,-9]:key==='bow'?[0,7,28]:[0,12,-28]);
@@ -1102,6 +1104,7 @@ function view(key, smooth=true){
   orbit.minDistance=(luxuryFraming&&key==='deck'?6:11)*(luxuryFraming?4:1);
   orbit.maxDistance=luxuryFraming?400:62;
   const focus=target.clone();
+  if(selectedBoat==='xo270'&&!phonePortrait()&&key==='deck')focus.add(new T.Vector3(-.75,0,-1).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180));
   if(luxuryFraming&&key==='deck')focus.add(new T.Vector3(0,2,-8.4).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y));
   if(luxuryFraming&&key==='stern')focus.add(new T.Vector3(0,2.8,-10.4).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y));
   const end=viewOffset(key).add(focus);
