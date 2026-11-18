@@ -474,6 +474,7 @@ header h1{transform:scaleX(1.4);transform-origin:left center}
  .toolbar.is-choosing-boat .secondary{grid-column:1/-1;grid-row:2;margin-top:2px}
 }
 
+@media(max-width:600px){.intro-credit{transform:scale(1.25);transform-origin:center}}
 </style>
 <body class="intro-active">
 <div id="stage"></div>
@@ -596,7 +597,9 @@ function alignBrandInk(){
   return;
  }
  const trailingLetters=title.textContent.trim().slice(-3)||'XXX';
- const trailingWidth=(brandMeasure.measureText(trailingLetters).width+(parseFloat(titleStyle.letterSpacing)||0)*trailingLetters.length)*titleScale;
+ const trailingSpacing=parseFloat(titleStyle.letterSpacing)||0;
+ const leadingHalf=brandMeasure.measureText(trailingLetters[0]).width+trailingSpacing;
+ const trailingWidth=(brandMeasure.measureText(trailingLetters).width+trailingSpacing*trailingLetters.length-leadingHalf*.5)*titleScale;
  subtitle.style.fontSize='16px';
  const naturalSubtitleWidth=subtitle.getBoundingClientRect().width;
  subtitle.style.fontSize=(16*Math.max(1,trailingWidth)/Math.max(1,naturalSubtitleWidth))+'px';
@@ -933,6 +936,7 @@ orbit.maxPolarAngle=1.53; orbit.autoRotateSpeed=.65;
 const presets = {bow:[14,5.6,18],side:[20,11,4],deck:[11,19,10],stern:[13,10,-19]};
 const target = new T.Vector3(0,5.5,0);
 let framing=1.35,luxuryFraming=false,currentCameraView='stern';
+let selectedBoat='sail';
 let introComplete=false,introStart=null,firstSeaFrame=null,seaRevealAt=null,openingReadyAt=null;
 const openingTiming={minimumLoading:1500,textureLead:450,overlayFade:1600,boatFade:1800};
 let directEntryPose=null,seaTexturesReady=false,seaTextureReadyAt=null;
@@ -1079,6 +1083,7 @@ const mobileToolbar=document.querySelector('.toolbar');
 new ResizeObserver(()=>{if(!mobileToolbar.classList.contains('is-closed'))document.body.style.setProperty('--mobile-toolbar-height',mobileToolbar.getBoundingClientRect().height+'px');}).observe(mobileToolbar);
 function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth;}
 function viewOffset(key){
+ if(phonePortrait()&&selectedBoat==='xo270'&&key==='bow')return new T.Vector3(7,2.2,28).multiplyScalar(framing).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180);
  if(phonePortrait()&&key!=='side'){
   const values=luxuryFraming?(key==='deck'?[-4.5,5.4,-17.5]:key==='bow'?[0,7,23]:[0,7,-23]):(key==='deck'?[0,23,-9]:key==='bow'?[0,7,28]:[0,12,-28]);
   return new T.Vector3(...values).multiplyScalar(luxuryFraming?4.8:framing).applyAxisAngle(new T.Vector3(0,1,0),-Number($('heading').value)*Math.PI/180);
@@ -1087,7 +1092,7 @@ function viewOffset(key){
   ?new T.Vector3(-6.2,2.8,-10.5).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y)
   :luxuryFraming&&key==='stern'
    ?new T.Vector3(3.5,6.5,-18.5).applyAxisAngle(new T.Vector3(0,1,0),heading.rotation.y)
-  :new T.Vector3(...presets[key]).multiplyScalar(framing*(framing>1&&key==='bow'?1.12:1)*(luxuryFraming&&key!=='bow'?.78:1));
+  :new T.Vector3(...(selectedBoat==='xo270'&&phonePortrait()&&key==='side'?[20,11,-7]:presets[key])).multiplyScalar(framing*(framing>1&&key==='bow'?1.12:1)*(luxuryFraming&&key!=='bow'?.78:1));
  if(innerWidth/innerHeight<1.1)offset.multiplyScalar(Math.min(2.2,1.1*innerHeight/innerWidth));
  if(luxuryFraming)offset.multiplyScalar(4.8);
  return offset;
@@ -3874,7 +3879,7 @@ async function prepareImportedBoat(file,report=null){
 // Only the active boat installs its water fields into the visible sea.
 const boatBerths={},boatCatalog=new Map(),hiddenBoatStaging=new T.Scene();
 let berthAnchor=null,berthSlot=0,preloadQueueRunning=false,firstBoatReady=false;
-let selectedBoat='sail',boatSwitchPending=false;
+let boatSwitchPending=false;
 function updateBoatSwitch(message=''){
  const button=$('boat-switch'),entry=boatCatalog.get(selectedBoat);
  const loadingTransform=setBoatIconLoading(Boolean(message));
@@ -4677,7 +4682,7 @@ function positionDirectEntrySea(){
  orbit.target.copy(directEntryPose.focus);camera.position.copy(directEntryPose.focus).add(directEntryPose.offset);orbit.update();
 }
 function beginBoatEntryPresentation(){
- if(selectedBoat==='xo270')currentCameraView='bow';
+ if(selectedBoat==='xo270')currentCameraView=phonePortrait()?'bow':'side';
  if(selectedBoat==='luxury'&&!phonePortrait())currentCameraView='side';
  // Shared by all vessel entries: a fixed sea/boat anchor, then simultaneous
  // model fade and a slower spherical flight to the selected preset.
