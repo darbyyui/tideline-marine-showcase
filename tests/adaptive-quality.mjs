@@ -9,7 +9,7 @@ let introComplete=true,transition=null,compassDragging=false;
 const orbit={autoRotate:false,addEventListener(){}},mirror={width:0,setSize(w){this.width=w;}};
 const ocean={getRenderTarget:()=>mirror},renderer={ratio:1,getPixelRatio(){return this.ratio;},setDrawingBufferSize(w,h,r){this.ratio=r;}};
 ${block}
-return {tick:adjustRenderQuality,sample:observeQualityPerformance,allowed(){return hdPerformanceAllowed;},ready(v){currentBoatReady=v;boatLoading=!v;showQuality();},moving(v){orbitHeld=v;},state(){return {high:highQuality,ratio:renderer.ratio,mirror:mirror.width,disabled:$('quality-auto').disabled};}};
+return {tick:adjustRenderQuality,sample:observeQualityPerformance,allowed(){return hdPerformanceAllowed;},ready(v){currentBoatReady=v;boatLoading=!v;showQuality();},moving(v){orbitHeld=v;},coasting(v){orbitMovedThisFrame=v;},state(){return {high:highQuality,ratio:renderer.ratio,mirror:mirror.width,disabled:$('quality-auto').disabled};}};
 `)($,{hidden:false});
 policy.tick(1000);assert.equal(policy.state().high,false);assert.equal(policy.state().disabled,true);
 policy.ready(true);policy.tick(1000);assert.equal(policy.state().high,true,'current vessel must unlock HD while other vessels are still preparing');assert.equal(policy.state().ratio,1.5);
@@ -26,3 +26,8 @@ policy.tick(10000);assert.equal(policy.state().high,false);
 $('quality-auto').onclick();policy.tick(10010);assert.equal(policy.state().high,true,'user can retry HD after performance fallback');
 policy.moving(true);policy.tick(10020);policy.moving(false);policy.tick(10021);assert.equal(policy.state().high,true,'HD returns on the first stationary frame');
 console.log('PASS: sustained HD performance detection, fallback and explicit retry');
+
+policy.coasting(true);policy.tick(20000);assert.equal(policy.state().high,false,'inertial camera movement stays LD regardless of elapsed frame time');
+policy.tick(20500);assert.equal(policy.state().high,false,'a slow LD frame must never flash HD');
+policy.coasting(false);policy.tick(20501);assert.equal(policy.state().high,true,'first still frame restores HD');
+console.log('PASS: slow-frame inertia cannot alternate LD and HD');
