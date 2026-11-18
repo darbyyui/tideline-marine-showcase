@@ -1,0 +1,6 @@
+{
+  "baseURL": "https://cdn.jsdelivr.net/gh/darbyyui/tideline-marine-showcase@cf3f319e279ec9ef9de0abe51bb5be4ad208d498/",
+  "layout": "github",
+  "timeoutMs": 12000,
+  "hedgeDelayMs": 1200
+}
